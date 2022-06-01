@@ -1,0 +1,130 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../scalable-hists.tex]{subfiles}
+
+\begin{document}
+  
+
+  To assess the performance of the histogram estimation algorithms,
+  two sets of simulated test cases are investigated.
+  The first test case consists of Uniform distributions over the unit hypercube in 
+  1, 10, 100, and 1000 dimensions,
+  and the second test case consists of standard Gaussian distributions in 1, 2, and 5 dimensions.
+
+  The same priority function $\phi(\mathrm{count}, \volume) = \mathrm{count}$ is used for both test cases,
+  both in Algorithms \ref{alg:dist-merge} and \ref{alg:get-mde}.
+  This priority function merges leaves with a low count first,
+  and corresponds to \verb|SEBTreeMC| in \cite{srp-mde-raaz-teng}.
+  The limit $\ol \phi$ in Algorithm \ref{alg:dist-merge}
+  is set so that Algorithm \ref{alg:get-mde} does not exceed the memory limit of one machine.
+
+  Each test case is simulated using $10^7$ and $10^8$ training data points,
+  and half as many validation data points.
+  The reported timings include simulation of the data set.
+
+  The simulations for Uniform distributions use a cluster with
+  four workers and a driver with 4 cores and 8 GB memory each,
+  for a total distributed performance of 16 cores and 32 GB memory and
+  a non-distributed performance of 4 cores and 8 GB memory.
+
+  The simulations for Gaussian distributions use a cluster consisting of 
+  nine workers and a driver with 2 cores and 8 GB memory each,
+  for a total distributed performance of 18 cores and 72 GB memory and
+  a non-distributed performance of 2 cores and 8 GB memory.
+
+  \begin{table}
+    \centering
+    % | distr dim n | countLimit | L1Error | time |
+    \begin{tabular}{|ccc|c|c|c|}
+      \hline
+      distribution & dimension & n & $\ol \phi$ & $L_1$ error & time (h:m:s) \\
+      \hline
+      Uniform & 1     & $10^7$ & 1000  & $1.13 \cdot 10^{-3}$ & 00:08:14 \\
+      & 10    & $10^7$ & 1000  & $6.07 \cdot 10^{-4}$ & 00:09:41 \\
+      & 100   & $10^7$ & 1000  & $0^*$ & 00:16:41 \\
+      & 1000  & $10^7$ & 1000  & $3.44 \cdot 10^{-3}$ & 01:41:56 \\
+      \hline
+      Uniform & 1     & $10^8$ & 10000 & $1.13 \cdot 10^{-3}$ & 00:26:14 \\
+      & 10    & $10^8$ & 10000 & $0^*$ & 00:31:57 \\
+      & 100   & $10^8$ & 10000 & $0^*$ & 01:19:15 \\
+      & 1000  & $10^8$ & 10000 & $0^*$ & 10:04:55 \\
+      \hline 
+      \hline 
+      Gaussian & 1    & $10^7$ & 1000  & $4.63 \cdot 10^{-3}$ & 00:13:23 \\
+      & 2    & $10^7$ & 1000  & N/A & 00:22:37 \\
+      & 5    & $10^7$ & 1000  & N/A & 00:37:49 \\
+      \hline 
+      Gaussian & 1    & $10^8$ & 10000 & $3.50 \cdot 10^{-3}$ & 00:17:48 \\
+      & 2    & $10^8$ & 10000 & N/A & 00:39:08 \\
+      & 5    & $10^8$ & 10000 & N/A & 01:22:56 \\
+      \hline 
+    \end{tabular}
+    \caption{Performance of MDE histogram estimation.
+    Histograms with errors marked with $^*$ have only one leaf (leading to 0 error for Uniform distributions)}
+    \label{tab:mde-results}
+  \end{table}
+
+  L1 errors are not computed for multivariate Gaussian distributions
+  due to the difficulty of numerically integrating the density
+  to a sufficient tolerance.
+  To determine the estimate's usefulness as a discriminator between different densities,
+  two Gaussian distributions with different means are 
+  simulated and used to estimate two histograms.
+  New sample points are then generated and assigned to
+  the histogram with the highest estimated density at that point.
+  Repeating this for multiple pairs of Gaussian densities with varying similarity,
+  the discriminatory property of the histograms can be observed.
+
+  Four such pairs are constructed using an equal number of
+  training and validation points
+  ($5 \cdot 10^6$ training and $2.5 \cdot 10^6$ validation).
+  The ``base" distribution is the same in all pairs,
+  the standard multivariate Gaussian distribution.
+  The other distributions are standard multivariate Gaussians shifted by a vector $\delta \mathbf 1$,
+  where $\mathbf 1$ is the vector with 1 in every component.
+  The values for $\delta$ are chosen such that 
+  there are integer Euclidean distances between the distributions' means.
+  Finally, $10^4$ new sample points are generated from each distribution and used to obtain the confusion matrices.
+  The results are presented in Table \ref{tab:conf-mat}.
+
+  \begin{table}
+    \centering
+    % delta | TP FP
+    %       | FN TN
+    \begin{tabular}{|c|cc||c|cc|}
+      \hline
+      \multicolumn{3}{|c||}{2D Multivariate Gaussian} & \multicolumn{3}{c|}{5D Multivariate Gaussian} \\
+      \hline
+      \hline
+      $\delta \sqrt 2$ & \multicolumn{2}{c||}{ confusion matrix (\%)} & $\delta \sqrt 5$ & \multicolumn{2}{c|}{ confusion matrix (\%)} \\
+      \hline
+      1 & TP: 34.4 & FP: 15.6 &
+      1 & TP: 34.3 & FP: 15.7 \\
+        & FN: 15.4 & TN: 34.6 & 
+        & FN: 16.0 & TN: 34.0 \\
+      \hline
+      2 & TP: 41.9 & FP: 8.08 &
+      2 & TP: 41.7 & FP: 8.28 \\
+        & FN: 8.05 & TN: 41.9 &
+        & FN: 8.36 & TN: 41.6 \\
+      \hline
+      3 & TP: 46.5 & FP: 3.52 &
+      3 & TP: 46.2 & FP: 3.78 \\
+        & FN: 3.49 & TN: 46.5 &
+        & FN: 3.73 & TN: 46.3 \\
+      \hline
+      5 & TP: 49.7 & FP: 0.26 &
+      5 & TP: 49.5 & FP: 0.50 \\
+        & FN: 0.29 & TN: 49.7 &
+        & FN: 0.43 & TN: 49.6 \\
+      \hline
+    \end{tabular}
+    \caption{
+      Confusion matrices for discrimination based on MDE histograms between pairs of Gaussian distributions.
+      Since an equal number of points are tested from both distributions,
+      the perfect discriminator has TP and TN at 50\%, and
+      FP and FN at 0\%.
+    }
+    \label{tab:conf-mat}
+  \end{table}
+
+\end{document}

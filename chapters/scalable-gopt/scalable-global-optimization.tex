@@ -1,0 +1,78 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[scalable-gopt.tex]{subfiles}
+
+\begin{document}
+  Interval arithmetic and the process in section \ref{sec:gopt} 
+  are implemented in the C++ library MRS 2.0 \cite{mrs2}.
+  Although the implementation is very performant on a single machine, 
+  it is not scalable to a distributed setting with a cluster of workers.
+  This becomes a problem when the function to be minimized is very high-dimensional, 
+  due to the vastly increased memory capacity and 
+  computational effort needed for the algorithms.
+
+  A solution to this is to use the popular distributed framework Apache Spark for 
+  handling communication and distribution of tasks in a cluster, 
+  where each worker uses MRS 2.0 for the actual work.
+  This is accomplished by Algorithm \ref{alg:gopt-scalable}.
+
+  \begin{algorithm}[!ht]
+    \caption{Scalable Global Optimization}
+    \label{alg:gopt-scalable}
+    \SetKwBlock{DoParallel}{do in parallel}{end}
+    \KwIn{
+      $f: \Rz^d \to \Rz$, the function to be minimized. 
+      
+      $\X$, the domain to search. 
+      
+      $\epsilon_0$, the sought tolerance level. 
+      
+      $r$, the factor to decrease $\epsilon$ by. 
+      
+      $N$, the number of nodes in the cluster.
+    }
+    \KwOut{$L$, a list of the candidate intervals.}
+
+    $\epsilon \gets 1$.
+    
+    Partition $\X$ into $(\X \ind 1, \dots, \X \ind N)$,
+    either by using domain knowledge or, if none is available, 
+    by uniformly partitioning the first axis.
+
+    Set $L \gets (\X \ind 1, \dots, \X \ind N)$, 
+    where $L$ is a distributed list so that 
+    worker $i$ has $\X \ind i$ in local memory.
+
+    \While {$\exists \x \in L : \dmrel(\x) > \epsilon_0$}{
+      $L_{new} \gets {}$, distributed list.
+
+      \DoParallel{
+        For each $\x \in L$, compute the list of candidate intervals with tolerance $\epsilon$ and append to $L_{new}$.
+      }
+      \DoParallel{
+        Find $l^* = \min_{\x \in L_{new}} \ol {F(\x)}$, i.e. the interval with smallest upper bound for the function values.
+      }
+      \DoParallel{
+        $L_{new} \gets \{ \x \in L_{new} : \ul {F(\x)} \leq l^* \}$, i.e. discard intervals where the lower bound for the function is greater than the lowest upper bound.
+      }
+
+      $L \gets L_{new}$
+
+      Re-distribute $L$ so that the number of intervals in each node is roughly equal.
+
+      $\epsilon \gets \frac{\epsilon}{r}$
+    }
+
+    \Return{$L$}
+  \end{algorithm}
+  
+  This is less efficient than the single machine implementation for several reasons.
+  One source of inefficiency is the communication overhead, 
+  especially since the optimization algorithm is written in C++, 
+  while Apache Spark uses Scala, meaning that data structures 
+  have to be converted between the languages between each batch.
+  Furthermore, the nodes do not share information about 
+  the current best estimate for the minimum, 
+  meaning that a node might work on intervals that 
+  another node already knows to not contain a global minimum.  
+  
+\end{document}

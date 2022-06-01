@@ -1,0 +1,74 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../mde.tex]{subfiles}
+
+\begin{document}
+  \begin{algorithm}
+    \caption{getDelta($s, v$)}
+    \label{alg:get-delta}
+    \KwIn{
+      $s$, CRP of histograms to search,
+
+      $v$, count-based histogram ($\Zz-$MRP) of validation data
+    }
+    \KwOut{
+      $L$, map from $\theta \in \Theta = \Kz(s)$ to $\Delta_\theta$
+    }
+    $\Theta \gets \Kz(s)$
+
+    // compute $\mathcal{A}_\Theta$
+
+    $\mathcal A_\Theta \gets []$
+
+    \For{$\theta \in \Theta$}{
+      $r \gets \{ \vartheta \in \Theta : 
+        |\Lz(s_\theta)| < |\Lz(s_\vartheta)|\}$
+        // keys for finer histograms
+
+      \For{$\vartheta \in r$}{
+        $A_{\theta, \vartheta} \gets \emptyset$
+
+        \For(){
+          $(\x_{\rho\vee}, f_{\rho\vee}) \in 
+            \{ (\x_{\rho\vee}, f_{\rho\vee}) \in 
+              s : f_{\rho\vee,\theta} > f_{\rho\vee,\vartheta}
+            \}$
+        }{
+          $A_{\theta, \vartheta} \gets 
+            A_{\theta, \vartheta} \cup \x_{\rho\vee}$
+        }
+        $\mathcal A_\Theta \gets A_{\theta, \vartheta} :: A$
+      }
+    }
+
+    make $\mathcal A_\Theta$ into a distributed array
+
+    $v \gets \mathrm{CRP}(v, \theta_v)$
+    // CRP of $v$ with key $\theta_v$
+
+    $s \gets \mathrm{collate}(s, v)$
+    // Add validation data to CRP
+
+    \For(// compute measure for each key and subbox){$(\x, f) \in s$}{
+      $f \gets 
+        \{ f_\theta \vol(\x) : f_\theta \in f \}$
+    }
+
+    \For(// distributed map){
+      $A \in \mathcal A_\Theta$
+    }{
+      $\mu_A \gets \sum_{\x_{\rho\vee} \in A} f_{\rho\vee, \theta_v}$
+
+      \For{$\theta \in \Theta$}{
+        $\delta_{A,\theta} \gets
+          \left| \sum_{\x_{\rho\vee} \in A} f_{\rho\vee, \theta} - \mu_A \right|$
+      }
+    }
+
+    $L \gets \{
+      \theta \mapsto \max_{A \in \mathcal A_\Theta} \delta_{A, \theta} :
+        \theta \in \Theta
+    \}$
+
+    \Return{L}
+  \end{algorithm}
+\end{document}

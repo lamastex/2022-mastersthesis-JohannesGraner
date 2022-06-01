@@ -1,0 +1,54 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../scalable-hists.tex]{subfiles}
+
+\begin{document}
+  As seen in tables \ref{tab:mde-results} and \ref{tab:conf-mat},
+  the performance of the MDE histograms is promising.
+  The $L_1$ errors decrease as the sample size increases,
+  although a method to compute the $L_1$ error for systematic approximations to multivariate Gaussian distributions
+  would be useful to establish this further.
+  Such a method is presented in \cite{srp-mde-raaz-teng} by creating an MRP of
+  the underlying density and sampling from that.
+  Due to time constraints this is not implemented in this project,
+  but it would be a natural extension to further investigate the usefulness of
+  the algorithms and procedures presented here.
+
+  \subfile{discussion/marg-hist-fig.tex}
+
+  Figure \ref{fig:marg-hists} shows the marginalization of 
+  2D and 5D Multivariate Gaussian histograms.
+  The results are as expected, so together with the results in 
+  Tables \ref{tab:mde-results} and \ref{tab:conf-mat},
+  the histogram estimation seems to be quite performant.
+
+  The performance of the MDE histograms could possibly be increased
+  by tuning the backtracking priority function $\phi$ and its limit $\ol \phi$.
+  In the simulations presented here no particular care was taken to tune
+  these parameters further than to the point where
+  the procedure stays within the memory limits of the workers.
+
+  All distributed algorithms in this project are
+  implemented without regard for how the data is partitioned,
+  which can increase the level of necessary communication between workers.
+  Such communication is generally the most severe bottleneck in distributed systems and
+  should be limited to the extent possible.
+  Hence, the procedures as implemented should be seen as
+  a worst-case analysis corresponding to the scenario where
+  there is no control over the way data is stored.
+  Such a situation can arise if a data set is collected and stored without
+  a specific analysis in mind,
+  and when the analysis begins the data set is too large to repartition without spending
+  an unreasonable amount of time or computing power.
+
+  In the case of Algorithms \ref{alg:finest-res} and \ref{alg:dist-merge},
+  a natural partition scheme is given by sorting leaves using 
+  the ordering defined in Section \ref{sec:leaves-only-rp}.
+  In Apache Spark, this is available as \verb|repartitionByRange|.
+  This can result in a distributed MRP where each partition contains a subtree,
+  at which point no communication between workers is necessary
+  until the final result is collected.
+  Distributed \verb|groupBy| and \verb|mapGroups| operations are thus replaced with \verb|mapPartition| operations,
+  which does not result in inter-worker communication.
+  Implementing this would be fairly straightforward,
+  but left out due to not being an option in the worst-case scenario described above.
+\end{document}

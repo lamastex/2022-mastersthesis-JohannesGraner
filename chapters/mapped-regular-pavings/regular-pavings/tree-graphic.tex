@@ -1,0 +1,133 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../regular-pavings.tex]{subfiles}
+
+\begin{document}
+  
+  \begin{figure}[tp]
+    \begin{center}
+      \scalebox{0.55}{
+        \setlength{\unitlength}{5cm}
+        \begin{picture}(6, 1.7)(0,0)
+          %root box
+          \put(0.375, 1.175){\circle*{0.08}}
+          \put(0.373,1.255){$\rho$}
+          \put(0,0){\line(0,1){0.75}}  %vertical line
+          \put(0,0){\line(1,0){0.75}}  %horizontal line
+          \put(0.75,0){\line(0,1){0.75}} %vertical line
+          \put(0,0.75){\line(1,0){0.75}} %horizontal line
+          \put(0.35, 0.35){\Large{$\x_\rho$}}
+          %XL and XR
+          \put(1.275, 1.3){\circle*{0.08}}
+          \put(1.273,1.38){$\rho$}
+          \put(1.075, 1.1){\circle*{0.08}}
+          \put(1.05,0.975){$\rho \sf{L}$}
+          \put(1.475, 1.1){\circle*{0.08}}
+          \put(1.45,0.975){$\rho \sf{R}$}
+          \put(1.275, 1.3){\line(-1,-1){0.2}}
+          \put(1.275, 1.3){\line(1,-1){0.2}}
+          \put(0.9,0){\line(0,1){0.75}}  %vertical line
+          \put(0.9,0){\line(1,0){0.75}}  %horizontal line
+          \put(1.65,0){\line(0,1){0.75}} %vertical line
+          \put(0.9,0.75){\line(1,0){0.75}} %horizontal line
+          \put(1.275,0){\line(0,1){0.75}} %vertical line
+          \put(1.0, 0.35){\Large{$\x_{\rho \mathsf{L}}$}}
+          \put(1.4, 0.35){\Large{$\x_{\rho \mathsf{R}}$}}
+          %XLL, XLR, XR
+          \put(2.275, 1.425){\circle*{0.08}} %rho
+          \put(2.273,1.5){$\rho$}
+          \put(2.275, 1.425){\line(-1,-1){0.2}}
+          \put(2.075, 1.225){\circle*{0.08}} %L
+          \put(2.075, 1.225){\line(-1,-1){0.2}}
+          \put(1.875, 1.025){\circle*{0.08}} %LL
+          \put(1.83,0.9){$\rho \sf{LL}$}
+          \put(2.075, 1.225){\line(1,-1){0.2}}
+          \put(2.275, 1.025){\circle*{0.08}} %LR
+          \put(2.25,0.9){$\rho \sf{LR}$}
+          \put(2.275, 1.425){\line(1,-1){0.2}}
+          \put(2.475, 1.225){\circle*{0.08}} %R
+          \put(2.46,1.1){$\rho \sf{R}$}
+          \put(1.8,0){\line(0,1){0.75}}  %vertical line
+          \put(1.8,0){\line(1,0){0.75}}  %horizontal line
+          \put(2.55,0){\line(0,1){0.75}} %vertical line
+          \put(1.8,0.75){\line(1,0){0.75}} %horizontal line
+          \put(2.175,0){\line(0,1){0.75}} %vertical line
+          \put(1.8,0.375){\line(1,0){0.375}} %horizontal line
+          \put(1.915, 0.545){\Large{$\x_{\rho \mathsf{LR}}$}}
+          \put(1.915, 0.15){\Large{$\x_{\rho \mathsf{LL}}$}}
+          \put(2.3, 0.35){\Large{$\x_{\rho \mathsf{R}}$}}
+          %XLL, XLR, XRL, XRR
+          \put(3.075, 1.425){\circle*{0.08}} %rho
+          \put(3.073,1.5){$\rho$}
+          \put(3.075, 1.425){\line(-1,-1){0.2}}
+          \put(2.875, 1.225){\circle*{0.08}} %L
+          \put(2.875, 1.225){\line(-1,-1){0.2}}
+          \put(2.675, 1.025){\circle*{0.08}} %LL
+          \put(2.64,0.9){$\rho \mathsf{LL}$}
+          \put(2.875, 1.225){\line(1,-1){0.2}}
+          \put(3.075, 1.025){\circle*{0.08}} %LR
+          \put(3.0,0.9){$\rho \sf{LR}$}
+          \put(3.075, 1.425){\line(1,-1){0.2}}
+          \put(3.275, 1.225){\circle*{0.08}} %R
+          \put(3.175, 1.025){\circle*{0.08}} %RL
+          \put(3.15,0.9){$\rho \mathsf{RL}$}
+          \put(3.275, 1.225){\line(1,-1){0.2}}
+          \put(3.475, 1.025){\circle*{0.08}} %RR
+          \put(3.45,0.9){$\rho \sf{RR}$}
+          \put(3.275, 1.225){\line(-1,-2){0.1}}
+          \put(2.7,0){\line(0,1){0.75}}  %vertical line
+          \put(2.7,0){\line(1,0){0.75}}  %horizontal line
+          \put(3.45,0){\line(0,1){0.75}} %vertical line
+          \put(2.7,0.75){\line(1,0){0.75}} %horizontal line
+          \put(3.075,0){\line(0,1){0.75}} %vertical line
+          \put(2.7,0.375){\line(1,0){0.75}} %horizontal line
+          \put(2.8, 0.545){\Large{$\x_{\rho \mathsf{LR}}$}}
+          \put(2.8, 0.15){\Large{$\x_{\rho \mathsf{LL}}$}}
+          \put(3.15, 0.15){\Large{$\x_{\rho \mathsf{RL}}$}}
+          \put(3.15, 0.545){\Large{$\x_{\rho \mathsf{RR}}$}}
+          %XLL, XLLL, XLRL, XLRR, XRL, XRR
+          \put(3.975, 1.55){\circle*{0.08}} %rho
+          \put(3.973,1.65){$\rho$}
+          \put(3.975, 1.55){\line(-1,-1){0.2}}
+          \put(3.975, 1.55){\line(1,-1){0.2}}
+          \put(3.775, 1.35){\circle*{0.08}} %L
+          \put(3.775, 1.35){\line(-1,-2){0.1}}
+          \put(3.775, 1.35){\line(1,-2){0.1}}
+          \put(4.175, 1.35){\circle*{0.08}} %R
+          \put(4.175, 1.35){\line(-1,-2){0.1}}
+          \put(4.175, 1.35){\line(1,-2){0.1}}
+          \put(3.675, 1.15){\circle*{0.08}} %LL
+          \put(3.64,1.03){$\rho \mathsf{LL}$}
+          \put(3.875, 1.15){\circle*{0.08}} %LR
+          \put(4.075, 1.15){\circle*{0.08}} %RL
+          \put(4.04,1.03){$\rho \mathsf{RL}$}
+          \put(4.275, 1.15){\circle*{0.08}} %RR
+          \put(4.24,1.03){$\rho \mathsf{RR}$}
+          \put(3.875, 1.15){\line(-1,-2){0.1}}
+          \put(3.875, 1.15){\line(1,-2){0.1}}
+          \put(3.775, 0.95){\circle*{0.08}} %LRL
+          \put(3.7,0.83){$\rho \mathsf{LRL}$}
+          \put(3.975, 0.95){\circle*{0.08}} %LRR
+          \put(3.9,0.83){$\rho \mathsf{LRR}$}
+          
+          \put(3.6,0){\line(0,1){0.75}}  %vertical line
+          \put(3.6,0){\line(1,0){0.75}}  %horizontal line
+          \put(4.35,0){\line(0,1){0.75}} %vertical line
+          \put(3.6 ,0.75){\line(1,0){0.75}} %horizontal line
+          \put(3.975,0){\line(0,1){0.75}} %vertical line
+          \put(3.6,0.375){\line(1,0){0.75}} %horizontal line
+          \put(3.7875,0.375){\line(0,1){0.375}} %vertical line
+          \put(3.7, 0.45){\begin{rotate}{90}{\Large{$\x_{\rho \mathsf{LRL}}$}}\end{rotate}}
+          \put(3.9, 0.45){\begin{rotate}{90}{\Large{$\x_{\rho \mathsf{LRR}}$}}\end{rotate}}
+          \put(3.71, 0.15){\Large{$\x_{\rho \mathsf{LL}}$}}
+          \put(4.05, 0.15){\Large{$\x_{\rho \mathsf{RL}}$}}
+          \put(4.05, 0.545){\Large{$\x_{\rho \mathsf{RR}}$}}
+        \end{picture}
+      }
+    \end{center}
+    \caption{A sequence of selective bisections of boxes (nodes) along the
+    first widest coordinate, starting from the root box (root node), produces an
+    RP.}
+    \label{fig:tree-graphic}
+  \end{figure}
+    
+\end{document}

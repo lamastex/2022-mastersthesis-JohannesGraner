@@ -1,0 +1,68 @@
+\documentclass{report}
+
+\usepackage{subfiles}
+\usepackage{natbib}
+\usepackage{intmacros, intmacros-extra}
+\usepackage{amsmath, amssymb}
+\usepackage{bbm}
+\usepackage{url}
+\usepackage{nicefrac}
+\usepackage[linesnumbered,ruled,vlined]{algorithm2e}
+\usepackage[usenames]{color}
+\usepackage{graphicx, rotating, subcaption}
+\usepackage{tikz}
+
+\usetikzlibrary{positioning}
+
+% style for boxes in RP
+\tikzstyle{box} = [draw=black, thick, outer sep=0pt, align=center]
+
+% style for nodes in RP
+\tikzstyle{rpn} = [circle, black, draw=black, fill=black, inner sep=0pt, minimum size=0.2cm]
+
+\SetKwRepeat{Do}{do}{while}
+
+\newtheorem{theorem}{Theorem}[chapter]
+
+\author{Johannes Graner\\{\small Supervisor: Raazesh Sainudiin}}
+
+\title{Scalable Algorithms in Nonparametric Computational Statistics}
+
+\begin{document}
+
+  \maketitle
+
+  \begin{abstract}
+    \subfile{abstract.tex}
+  \end{abstract}
+
+  \tableofcontents
+
+  \newpage
+
+  \section{Introduction}
+    \subfile{chapters/introduction.tex}
+
+  \chapter{Scalable Global Optimization}
+    \subfile{chapters/scalable-gopt.tex}
+
+  \chapter{Sketching with Trends}
+    \subfile{chapters/trend-calculus.tex}
+
+  \chapter{Mapped Regular Pavings}
+    \subfile{chapters/mapped-regular-pavings.tex}
+
+  \chapter{Scalable Histogram Estimation}
+    \subfile{chapters/scalable-hists.tex}
+
+  \chapter*{Support}
+    \subfile{support.tex}
+
+  \bibliography{
+    scalable-gopt.bib,
+    trend-calculus.bib,
+    mapped-regular-pavings.bib
+  }
+  \bibliographystyle{plain}
+
+\end{document}

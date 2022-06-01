@@ -1,0 +1,49 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../scalable-gopt.tex]{subfiles}
+
+\begin{document}
+  Global optimization refers to finding the 
+  global minimum or maximum value of a function 
+  $f: \Rz^d \to \Rz$ in a specified domain $\X \in \Rz^d$.
+  Without loss of generality, the minimum is sought, 
+  since the maximum is found by minimizing $-f$.
+  In order to use the advantages of interval arithmetic, 
+  some assumptions on $f$ are necessary.
+  The most basic assumptions are i) $f$ has an inclusion isotonic interval extension $F$,
+  ii) $\X$ is compact, and iii) $f$ is well-defined everywhere in $\X$.
+
+  The domain 
+  $\X = \left( \X \ind 1, \dots, \X \ind n \right) = 
+  \left( [\ul X \ind 1, \ol X \ind 1], \dots, [\ul X \ind n, \ol X \ind n] \right)$ is
+  then partitioned component-wise as 
+  $\X \ind j = \bigcup_{i=1}^{b} [x_i \ind j, x_{i+1} \ind j]$, 
+  where $x_1 \ind j= \ul X \ind j$, $x_{b+1} \ind j = \ol X \ind j$, 
+  and $i < k \implies x_i \ind j< x_k \ind j$.
+  In other words, $\X$ is divided into $b$ thick intervals 
+  $\x_i = (\x_i \ind 1, \dots, \x_i \ind n), i = 1,\dots,b$ 
+  that overlap only at the boundaries.
+  The general approach is to test if a global minimum can occur in one of the intervals in the partition, 
+  and discard the interval if such is not the case.
+  The remaining intervals in the partition are then bisected along the axis of maximum diameter and
+  the process is repeated until all remaining intervals have
+  (maximum) relative diameter no larger than a tolerance $\epsilon$.
+  Let $\F_i = F(\x_i)$.
+  Four such tests are used, along with a verification process,
+  all of which are explained in detail in \cite{toolbox-hammer}.
+
+  \subsection{Midpoint cut-off test}
+    \subfile{global-optimization/midpoint-cutoff.tex}
+
+  \subsection{Monotonicity test}
+    \subfile{global-optimization/monotonicity.tex}
+
+  \subsection{Concavity test}
+    \subfile{global-optimization/concavity.tex}
+
+  \subsection{Interval Newton test}
+    \subfile{global-optimization/newton.tex}
+
+  \subsection{Verification}
+    \subfile{global-optimization/verification.tex}
+
+\end{document}

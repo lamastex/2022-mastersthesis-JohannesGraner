@@ -1,0 +1,25 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../main.tex]{subfiles}
+
+\begin{document}
+  Time series often feature regions where the tendency to 
+  increase or decrease is somewhat constant.
+  These regions can vary dramatically in scale while behaving quite similarly.
+  Such behaviors are called \textit{trends} and are of much interest in many disciplines, 
+  among them analysis of financial time series.
+  The time series tends to increase when the trend is \textit{up}, 
+  and decrease when the trend is \textit{down}.
+
+  While such trends can be easy to spot for a human, 
+  it is not trivial how a trend should be defined precisely for use in automated systems,
+  which are necessary when the time series is so long that a human cannot find
+  all short-term trends in a reasonable amount of time.
+  One possible definition of a trend which lends itself nicely to 
+  fast computation is the one used in Trend Calculus \cite{trendcalculus,morgan-amend-mastering-spark}.
+
+  \section{Trend Calculus}
+    \subfile{trend-calculus/trend-calculus.tex}
+
+  \section{Discussion}
+    \subfile{trend-calculus/discussion.tex}
+\end{document}

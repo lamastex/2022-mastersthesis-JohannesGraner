@@ -1,0 +1,43 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../trend-calculus.tex]{subfiles}
+
+\begin{document}
+  A commonly used framework for big data processing and
+  distributed computing is Apache Spark.
+  In Spark, each data point is a row consisting of fields
+  corresponding to each dimension of the data point.
+  As in a traditional database system, every row must follow the same schema.
+  A time series is then a data set consisting of rows with two fields, the time and the value.
+  In order to be able to handle several time series at once, 
+  an additional field with the label for the time series can be added.
+  For example, in a data set with two time series, each describing the price of some commodity, 
+  the label would be the name or identifier of the commodity.
+
+  Each item in a Spark data set belongs to a partition, and 
+  all operations on the data set are done partition-wise.
+  The partitions can reside on different workers in the cluster.
+  In order to use the Spark framework for Trend Calculus, 
+  the algorithm must be translated into a series of operations on partitions.
+
+  Apache Spark is written in Scala and there are APIs for Scala, Java, Python, and R.
+  The Scala API is chosen due to being particularly robust with 
+  compile-time type checking and access to all low-level functionality of Spark.
+  Additionally, Scala supports functional programming which 
+  makes programs written in this style easy to verify.
+  
+  The algorithm is implemented using \verb|flatMapGroupsWithState|, 
+  which allows the partitions to be mapped, in order, 
+  to process some output with a low memory footprint state that is passed to the next partition.
+  In this case, the state consists of the last window, the last trend, and 
+  any remaining data points that could not be processed due to not filling a window.
+  In order to compute all reversal orders in a single pass, 
+  the state contains the last window and trend for all as yet discovered reversal orders.
+  Since the memory footprint of a window and trend are fixed, 
+  and the number of remaining points cannot exceed the window size $s$, 
+  the memory footprint of the state is proportional to the number of reversal orders, 
+  which is generally logarithmic in $N$.
+  This is small enough that the memory footprint of the state does not become a problem, 
+  even for very large data sets.
+  
+  The implementation is published under an open source licence \cite{spark-trendcalculus}.
+ \end{document}

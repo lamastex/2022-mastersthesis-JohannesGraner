@@ -1,0 +1,52 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../histograms.tex]{subfiles}
+
+\begin{document}
+
+  Let $\Lambda \subset \Delta = \{1,2,\dots,d\}$ be a subset of 
+  coordinates of $x$ such that $|\Lambda| = d' < d = |\Delta|$,
+  and let $x' = (x'_j)_{j \in \Lambda}$ be a fixed subtuple of $x$.
+  The non-normalized conditional density of $\X$ given $x'$ is then
+  $f^{|x'}\left( (x_i)_{i \in \Delta \backslash \Lambda} \right) =
+  \left( (x_i)_{i \in \Delta} \right)$ where $(x_i)_{i \in \Lambda} = (x'_i)_{i \in \Lambda}$.
+  This is non-normalized since in general $I^{|x'} = \int f^{|x'} d\left( (x_i)_{i \in \Delta \backslash \Lambda} \right) \neq 1$.
+  The conditional density is given by $\frac{f^{|x'}\left( (x_i)_{i \in \Delta \backslash \Lambda} \right)}{I^{|x'}}$.
+
+  As with the previous operations, an algorithm for conditional density is presented in \cite{mrp-raaz-harlow-tucker}
+  and Algorithm \ref{alg:slice} presented here is adapted for 
+  sparse bitstring representations of MRPs.
+  In \cite{mrp-raaz-harlow-tucker}, this operation is called \textit{slice} and 
+  for consistency that name is used here as well.
+
+  \begin{algorithm}
+    \caption{slice($s, \Lambda, \x'$)}
+    \label{alg:slice}
+    \KwIn{
+      $s$, the $\Rz$-MRP ($e = 0$) representing the density-based histogram,
+    
+      $\Lambda$, the set of axes to condition on,
+
+      $\x'$, the values to condition on at each axis in $\Lambda$
+    }
+    \KwOut{
+      $s'$, the $\Rz$-MRP ($e = 0$) representing the histogram for the non-normalized conditional density
+    }
+
+    $\mathrm{sliceBoxes} \gets $ set of boxes that contain $\x'$
+
+    $\mathrm{newBoxes} \gets \mathrm{sliceBoxes}$ with coordinates in $\Lambda$ removed and updated node labels
+
+    $\mathrm{oldToNew} \gets $ Map from boxes in $\mathrm{sliceBoxes}$ to corresponding box in $\mathrm{newBoxes}$
+
+    $s' \gets []$
+
+    \For{$(\x_{\rho \vee}, f_{\rho, \vee}) \in s$}{
+      \If{$\x_{\rho \vee} \in \mathrm{sliceBoxes}$}{
+        $s' \gets s' :: (\mathrm{oldToNew}[\x_{\rho \vee}], f_{\rho, \vee})$
+      }
+    }
+
+    \Return{$s'$}
+  \end{algorithm}
+
+\end{document}

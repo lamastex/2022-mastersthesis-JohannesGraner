@@ -1,0 +1,33 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../main.tex]{subfiles}
+
+\begin{document}
+  Estimating histograms is one of the most natural approaches in density estimation.
+  The main drawback of histograms is the computational resources needed when 
+  the number of dimensions and/or the sample size is very large.
+
+  A partial solution to this problem is to make the computation scalable,
+  distributing the workload across several workers.
+  In the best case scenario, such distributed computing
+  decreases the computation time linearly in the number of workers.
+  
+  The \verb|mrs2| library for C++ \cite{mrs2,mrp-raaz-harlow-tucker}
+  contains efficient implementations for non-distributed estimation of histograms as MRPs.
+  A distributed version implemented in Scala and using Apache Spark for distribution
+  is given in \cite{scala-density-tree}.
+  In this work, the randomized algorithms for scalable density estimation
+  based on minimum distance in \cite{srp-mde-raaz-teng}
+  are made efficient with sparse MRPs.
+
+  \section{Histogram estimation through merging}
+    \subfile{scalable-hists/merging.tex}
+
+  \section{Minimum Distance Estimation}
+    \subfile{scalable-hists/mde.tex}
+
+  \section{Results}
+    \subfile{scalable-hists/results.tex}
+
+  \section{Discussion}
+    \subfile{scalable-hists/discussion.tex}
+\end{document}

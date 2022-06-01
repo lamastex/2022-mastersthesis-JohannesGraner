@@ -1,0 +1,66 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../mde.tex]{subfiles}
+
+\begin{document}
+  \begin{algorithm}
+    \caption{mdeSearch$(s, v, k, \phi)$}
+    \label{alg:get-mde}
+    \SetKwFunction{FmdeStep}{\normalfont{mdeStep}}
+    \SetKwProg{Fn}{Function}{:}{}
+    \KwIn{
+      $s$, fine count-based histogram as sparse MRP with root box $\x_\rho$,
+
+      $v$, validation data as distributed array,
+
+      $k$, step size in adaptive search,
+
+      $\phi$, priority function for backtracking
+    }
+    \KwOut{
+      $s'$, minimum distance estimate count-based histogram
+    }
+
+    \Fn{\FmdeStep{$s$, $v$, $k$, $\ol \phi$}}{
+      $B \gets \mathrm{backtrack}(\phi, \ol \phi, s)$, 
+      // sequence of coarsening histograms (Algorithm 3 in \cite{scala-density-tree})
+
+      $L \gets [s_{\theta_1}, \dots, s_{\theta_k}]$, a list of equally spaced histograms in $B$
+
+      $K \gets \{\kappa_1, \dots, \kappa_k\}$, CRP keys
+
+      $s_c \gets \mathrm{CRP}(s_{\theta_1}, \kappa_1)$
+
+      \For{$s_{\theta_i} \in [s_{\theta_2}, \dots, s_{\theta_k}]$}{
+        $s_c \gets \mathrm{collate}(s_c, \mathrm{CRP}(s_{\theta_i}, \kappa_i))$
+      }
+
+      $s_v \gets \mathrm{finestRes}(v, \x_\rho, \max(\fct{depth}(s))$
+      // $\Zz-$MDE of validation data
+
+      $\Delta \gets \mathrm{getDelta}(s_c, s_v)$
+  
+      $(\hat \theta^* \mapsto \hat \delta^*) \gets
+      \argmin_{(\theta \mapsto \delta) \in \Delta} \delta$
+      // Best histogram estimate found
+
+      $i \gets$ index of $\hat \theta^*$ such that $s_{\theta_i} = s_{\hat \theta^*}$
+
+      \Return{$(s_{\theta_{i-1}}, s_{\theta_{i}}, s_{\theta_{i+1}})$}
+      // the best estimate and the two closest estimates
+    }
+
+    $(s'_+, s', s'_-) \gets \fct{mdeStep}(s, v, k, 0)$
+    // backtracked to the trivial histogram with one leaf
+
+    \While(// further zooming possible){
+      $\fct{size}(s'_+) - \fct{size}(s') > 1$
+    }{
+      $\ol \phi \gets \phi(s'_-)$
+
+      $(s'_+, s', s'_-) \gets \fct{mdeStep}(s'_+, v, k, \ol \phi)$
+      // start from finer estimate than best, limit backtracking to coarser estimate than best
+    }
+
+    \Return{$s'$}
+ \end{algorithm}
+\end{document}

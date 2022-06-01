@@ -1,0 +1,72 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../merging.tex]{subfiles}
+
+\begin{document}
+  The next step from the extremely fine-resolution histogram is to backtrack until
+  the number of leaves is small enough to fit into the available memory of a single computer.
+  A non-distributed algorithm for this is presented in \cite{scala-density-tree} as Algorithm 3.
+  That algorithm takes a (sparse) histogram and a priority function
+  $\phi: \text{Count} \times \text{Volume} \to \Rz_{\ge 0}$
+  and returns a coarsening sequence of histograms, 
+  where each step in the sequence selects the parent node with lowest priority,
+  and merges the children of that node.
+  The priority function is randomized as ties among several parent nodes
+  with the lowest priority are resolved by uniform random sampling.
+  Given a limit $\ol \phi$ on the priority function,
+  the merging process is stopped when the selected parent node has priority at least $\ol \phi$.
+  This ensures that all leaves have priority below $\ol \phi$.
+
+  The distributed version of the algorithm takes advantage of
+  the possibility of using sparse histograms by
+  partitioning the histogram into subtrees that can be merged separately and then combined.
+  This is done iteratively, where each step partitions 
+  the histogram into subtrees at a specific depth,
+  and that depth decreases until no subtrees have mergeable nodes.
+  The distributed algorithm is presented in Algorithm \ref{alg:dist-merge}.
+
+  \begin{algorithm}
+    \caption{distBacktrack$(\phi, \ol \phi, k, s)$}
+    \label{alg:dist-merge}
+    \KwIn{
+      $\phi: \text{Count} \times \text{Volume} \to \Rz_{\ge 0}$, a priority function,
+      
+      $\ol \phi$, an upper limit on $\phi$,
+
+      $k$, step size to decrease depth by each iteration,
+
+      $s$, the count-based histogram to be merged.
+    }
+    \KwOut{
+      $s'$, count-based histogram where no more leaves can be merged.
+    }
+
+    $D \gets \min( \fct{depth} ( s ) )$
+
+    $s' \gets s$
+
+    \While{$D > 1$ \normalfont{and} $s'$ \normalfont{has leaves that can be merged}}{
+      \If{$D \le k$}{
+        $k \gets$ a new step size, smaller than $D$
+      }
+
+      $D \gets D - k$
+
+      $s_G \gets s'$ grouped by ancestor at depth $D$ // Distributed group by
+
+      \For(// Distributed map, $L$ is list of leaves descended from ancestor){$s_i = (\mathrm{ancestor}, L) \in s_G$}{
+        // Let $\x(l)$ be the box associated with leaf label $l$.
+
+        \eIf{$\phi( \sum_{l \in L} \#\x(l), \vol (\mathrm{ancestor})) < \ol \phi$}{
+          $L \gets [(\mathrm{ancestor}, \sum_{l \in L} \#\x(l))]$
+        } { %else
+          $L \gets \mathrm{backtrack}(\phi, \ol \phi, L)$ // Non-distributed backtracking (Algorithm 3 from \cite{scala-density-tree}, stopping at $\ol \phi$)
+        }
+      }
+
+      $s_i \gets L$
+    }
+
+    \Return{$s$}
+  \end{algorithm}
+
+\end{document}

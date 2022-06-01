@@ -1,0 +1,83 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../scalable-hists.tex]{subfiles}
+
+\begin{document}
+  In \cite{srp-mde-raaz-teng}, a method for obtaining a
+  minimum distance estimate (MDE) histogram is presented.
+  Such an MDE has universal performance guarantees \cite{devroye-lugosi}.
+  This method builds on the \verb|mrs2| package for C++ \cite{mrs2} and
+  does not support parallel or distributed computations.
+
+  Let $\Theta$ be a finite set of indices for density estimates $\{ f_{n,\theta} : \theta \in \Theta \}$.
+  The number of bins in a sequence of coarsening histograms (represented as MRPs) 
+  constitutes such a set $\Theta$.
+  This $\Theta$ can be naturally ordered by the number of bins,
+  and the goal is to select the optimal estimate from the $|\Theta|$ many histograms.
+
+  If $\nu \in (0, \nicefrac{1}{2})$ is the fraction of data used for validation,
+  then $n - \lfloor \nu n \rfloor$ (written $n - \nu n$ for convenience)
+  points are used for training and the rest for validation.
+
+  For a pair $(\theta, \vartheta) \in \Theta^2$ where $\theta \neq \vartheta$,
+  the \textit{Scheffé set} of $(\theta, \vartheta)$ is
+
+  \[ 
+    A_{\theta, \vartheta} = 
+    A(f_{n - \nu n, \theta}, f_{n - \nu n, \vartheta}) = 
+    \{ x : f_{n - \nu n, \theta}(x) > f_{n - \nu n, \vartheta}(x) \}.
+  \]
+
+  The collection of all Scheffé sets over $\Theta$ is called the \textit{Yatracos class} and is denoted $\mathcal{A}_\Theta$:
+
+  \[
+    \mathcal{A}_\Theta =
+    \{
+      \{ x : f_{n - \nu n, \theta}(x) > f_{n - \nu n, \vartheta}(x) \} :
+      (\theta, \vartheta) \in \Theta^2, \theta \neq \vartheta
+    \}. 
+  \]
+
+  The minimum distance estimate (MDE) $f_{n - \nu n, \theta^*}$ is
+  the histogram constructed from training data of sample size $n - \nu n$ 
+  and validation data of size $\nu n$ that minimizes
+
+  \[
+    \Delta_\theta = 
+    \sup_{A \in \mathcal{A}_\Theta} \left| 
+      \int_A f_{n - \nu n, \theta} - \mu_{\nu n}( A ) 
+    \right|  
+  \]
+  i.e. $\theta^* = \min_{\theta \in \Theta} \Delta_\theta$.
+
+  A procedure for finding this estimate is presented in
+  \cite{srp-mde-raaz-teng} as a combination of Algorithms 2, 3, and 4.
+  Since the size of the Yatrocos class grows as $|\Theta|^2$,
+  it is infeasible to compare every estimate to every other estimate.
+  To keep $|\Theta|$ fairly small, an adaptive search is employed, as done in \cite{srp-mde-raaz-teng}.
+
+  A set of $k$ estimates along the coarsening sequence are chosen equally far apart,
+  and $\Theta$ is restricted to only those estimates.
+  The best estimate $\hat \theta^*$ is chosen and $k-1$ other estimates are chosen near $\hat \theta^*$,
+  i.e. from 2 or more, but fewer than $k - 1$, nearest neighbors of $\hat \theta^*$.
+  This process is repeated until no further ``zooming in" is possible.
+  The MDE is taken as the best estimate found.
+  Usually, $10 \le k \le 20$.
+
+  Algorithms \ref{alg:get-delta} and \ref{alg:get-mde} presented here
+  are adaptations of the algorithms in \cite{srp-mde-raaz-teng}
+  to suit the sparse bitstring representation of MRPs.
+  For the most part, these algorithms are not parallelized or distributed.
+  The algorithms could possibly be further parallelized or distributed,
+  but is not explored due to time constraints.
+  However, the distributed backtracking procedure can be used to find
+  the larget possible histogram that will fit in the memory of one machine,
+  and MDE can be done from such a histogram, which is along the path 
+  of a consistent partitioning rule based on statistically equivalent blocks,
+  due to the choice of the priority function used.
+  Algorithms \ref{alg:rpunion} to \ref{alg:get-mde} are implemented in Scala and Apache Spark,
+  and are published with a permissive open source license as \cite{github-spark-density-tree}.
+
+  \subfile{mde/get-delta.tex}
+
+  \subfile{mde/get-mde.tex}
+\end{document}

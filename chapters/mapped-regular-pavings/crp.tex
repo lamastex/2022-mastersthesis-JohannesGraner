@@ -1,0 +1,77 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../mapped-regular-pavings.tex]{subfiles}
+
+\begin{document}
+  There are situations where
+  several different histograms are needed at the same time,
+  such as in density estimation where histograms are 
+  compared to determine which is the best estimate of
+  the underlying density.
+  For this reason, a data structure that contains several histograms can be advantageous.
+
+  One such data structure is presented in 
+  \cite{srp-mde-raaz-teng} as the \textit{Collated Regular Paving} (CRP).
+  A CRP is an RP where each leaf is associated with more than one value.
+  In \cite{srp-mde-raaz-teng}, the values associated with each leaf is
+  the density of each histogram in the box that the leaf represents,
+  as well as the empirical density of validation data in the box.
+  Adding an additional histogram to the collection is referred to as \textit{collating},
+  and the same term is used when a CRP is created from two non-collated histograms.
+  To collate two MRPs, they must have the same root box,
+  so that the leaf labels refer to the same sub-boxes.
+
+  Note that any two $\Az-$MRPs with the same root box can be collated,
+  this data structure is not unique to histograms.
+  The only implementation presented here is for density-based histograms,
+  but the implementation details for other MRPs would be very similar.
+
+  A procedure for collation exists in \verb|mrs2| \cite{mrs2},
+  and the corresponding procedure for (sparse) bitstring representations
+  of MRPs is presented here in Algorithm \ref{alg:crp}.
+  Only the collation of two CRPs is presented since
+  an MRP can easily be transformed into a CRP with only one underlying MRP.
+  In this implementation, a CRP is an MRP where each leaf is associated
+  with a map from $k \in \Kz$, where $\Kz$ is a set of labels (keys) for the histograms,
+  to the density estimated by histogram $f_k$ in the leaf's box.
+  In other words, a CRP is a $\{ \kappa : \Kz \to \Rz_{\ge 0} \}$-MRP.
+  Every leaf has the same key set $\Kz$, so some leaves may 
+  have estimated densities of 0 for one or more histograms.
+  This generally makes the CRP less sparse than the underlying histograms.
+  If $s$ is a CRP, let $K(s)$ denote the set of keys in $s$.
+
+  \begin{algorithm}
+    \caption{Collation of MRPs}
+    \label{alg:crp}
+    \SetKwFunction{FCollate}{$\mathrm{collatorOp}$}
+    \SetKwProg{Fn}{Function}{:}{}
+    \KwIn{
+      $s_1, s_2$, CRPs of density-based histograms with non-overlapping key sets
+    }
+    \KwOut{
+      $s$, the collation of $s_1$ and $s_2$
+    }
+    $\Kz_1 \gets K(s_1)$;
+    $\Kz_2 \gets K(s_2)$
+
+    \Fn{\FCollate{$m_1$, $m_2$}}{
+      // $m_1$ and $m_2$ are maps from keys to densities,
+      represented as sets $\{ k \mapsto v \}$
+
+      \If(// leaf does not exist in $s_1$){$m_1 = \emptyset$}{
+        \Return{
+          $m_2 \cup \{ k \mapsto 0 : k \in \Kz_1 \}$
+        }
+      } \ElseIf(// leaf does not exist in $s_2$){$m_2 = \emptyset$}{
+        \Return{
+          $m_1 \cup \{ k \mapsto 0 : k \in \Kz_2 \}$
+        }
+      } \Else(// leaf exists in both $s_1$ and $s_2$){
+        \Return{
+          $m_1 \cup m_2$
+        }
+      }
+    }
+
+    \Return{$\MRPOperate(s_1, s_2, \fct{collatorOp}, \emptyset)$}
+  \end{algorithm}
+\end{document}

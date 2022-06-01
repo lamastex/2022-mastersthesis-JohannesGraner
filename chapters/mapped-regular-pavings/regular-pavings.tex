@@ -1,0 +1,58 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../mapped-regular-pavings.tex]{subfiles}
+
+\begin{document}
+  
+  Consider an interval vector (or box) $\x \in \Iz \Rz^d$.
+  The first coordinate of maximum width is denoted $\iota$.
+  By splitting $\x$ perpendicularly at the mid-point along the $\iota$-th coordinate, 
+  the child boxes $\x_L$ and $\x_R$ are given as
+
+  \begin{align*}
+    \x_L &= \x_1 \times \dots \times [\ul x_\iota, \fct{mid} (\x_\iota) ) \times \x_{\iota + 1} \times \dots \times \x_d, \\
+    \x_R &= \x_1 \times \dots \times [\fct{mid} (\x_\iota), \ol x_\iota ] \times \x_{\iota + 1} \times \dots \times \x_d.
+  \end{align*}
+
+  This type of bisection is called \textit{regular}.
+  Since the split interval in $\x_L$ is half-open, 
+  the intersection between $\x_L$ and $\x_R$ is empty.
+  Hence, $\{ \x_L, \x_R \}$ constitutes a partition of $\x$.
+  A recursive sequence of regular bisections starting from the root box $\x_\rho$ is 
+  called a \textit{regular paving} or $n$-tree \cite{scala-density-tree}.
+  A regular paving of $\x_\rho$ can be represented by a binary tree, 
+  where each node in the tree corresponds to a sub-box of $\x_\rho$.
+  In such a tree, each node has either zero or two children.
+  The set of leaf nodes, denoted $\Lz$, constitutes 
+  a partition of the root box $\x_\rho$ since each box corresponding to 
+  a leaf node is an element of the partition of the box corresponding to the parent of all the leaf nodes.
+
+  Figure \ref{fig:tree-graphic} gives the intuition for this, 
+  the label of each leaf node corresponding to a box in the partition.
+  Note that the volume of a box in the partition is determined by 
+  the depth of the corresponding node in the tree.
+  Likewise, the position of the box is determined by 
+  the position of the node compared to all other possible nodes at that depth.
+  For example, in Figure \ref{fig:tree-graphic} the node $\rho LL$ is the leftmost node at depth 2,
+  hence the corresponding box $\x_{\rho LL}$ is in the bottom left corner since 
+  this is the box given by taking the lower interval in each split.
+  For $x \in \x_\rho$, let $l(x) \in \Lz$ be the leaf node 
+  corresponding to the finest partitioned box that $x$ belongs to.
+
+  \subfile{regular-pavings/tree-graphic.tex}
+
+  Given a root box $\x_\rho$, let $\Sz_k$ be 
+  the set of all regular pavings with $k$ splits starting from $\x_\rho$.
+  Since $|\Lz(s)| = 1$ if $s \in \Sz_0$ and each split adds exactly one leaf, 
+  $m(s) = |\Lz(s)| = k + 1$ if $s \in \Sz_k$.
+  Let $\Sz_{i:l} = \bigcup_{k = i}^l \Sz_k$ be the set of 
+  regular pavings with between $i$ and $l$ splits, inclusive.
+  The set of all regular pavings is denoted $\Sz_{0:\infty} = \lim_{l \to \infty} \Sz_{0:l}$.
+
+  \subsection{Memory-efficient representation}
+    \label{sec:leaves-only-rp}
+    \subfile{regular-pavings/leaves-only.tex}
+
+  \subsection{Union of regular pavings}
+    \subfile{regular-pavings/union.tex}
+
+\end{document}

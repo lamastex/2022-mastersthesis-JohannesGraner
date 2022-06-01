@@ -1,0 +1,79 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../histograms.tex]{subfiles}
+
+\begin{document}
+
+  Let $f: \Rz^d \to \Rz$ be the density of a $d$-dimensional real-valued
+  random variable $\X = (X_1, \dots, X_d)$.
+  $\X$ can be marginalized to a random variable $\X \ind m$ with 
+  $d' < d$ dimensions and density function
+  $f \ind m : \Rz^{d'} \to \Rz$
+  by integrating out $x_{i_1}, \dots, x_{i_{d - d'}}$.
+  The marginal density $f \ind m$ can be computed pointwise as:
+  \[ f \ind m (x) = \idotsint f(x) dx_{i_1}, \dots, dx_{i_{d - d'}} .\]
+
+  A density-based histogram can also be marginalized in a similar way,
+  and due to the structure of RPs, marginalizing a histogram
+  represented as an $\Rz$-MRP can be done efficiently as
+  presented in Algorithm \ref{alg:marginalize}.
+  Marginalization of MRPs is introduced in \cite{mrp-raaz-harlow-tucker} and 
+  the algorithm presented here is adapted for 
+  sparse bitstring representations of MRPs.
+
+  \begin{algorithm}
+    \caption{Marginalize($s, \Lambda$)}
+    \label{alg:marginalize}
+    \KwIn{
+      $s$, 
+        an $\Rz$-MRP of a density-based histogram with root box $\x_\rho \in \Rz^d$,
+    
+      $\Lambda$, 
+        the set of axes to marginalize out.
+    }
+    \KwOut{
+      $s'$, an $\Rz$-MRP with root box $\x'_\rho \in \Rz^{d'}$, 
+        the marginalized histogram.
+    }
+
+    $s' \gets s$ with all axes in $\Lambda$ removed from boxes.
+
+    $s' \gets s'$ grouped by box // since axes were removed, there may be duplicated boxes.
+
+    \For(// $L_f$ is list of densities){$(x'_{\rho \vee}, L_f) \in s'$}{
+      $\mathrm{oldVol} \gets \vol (x_{\rho \vee})$ // Volume of box before marginalization
+
+      $\mathrm{newVol} \gets \vol (x'_{\rho \vee})$ // Volume of box after marginalization
+
+      $L_f \gets L_f$ with each element $f$ mapped to $f \left( \frac{\mathrm{oldVol}}{\mathrm{newVol}} \right)$
+
+      $\mathrm{newDens} \gets \sum L_f$
+
+      $(x'_{\rho \vee}, L_f) \gets (x'_{\rho \vee}, \mathrm{newDens})$
+    }
+
+    $\mathrm{margLeaves} \gets $ the set of leaves after marginalization
+
+    $\mathrm{ancMap} \gets $ Map from ancestor boxes in $s'$ to their descendents in $\mathrm{margLeaves}$
+
+    $\mathrm{descDens} \gets $ Map from each leaf in $\mathrm{margLeaves}$ to $0$
+
+    \For{$(x'_{\rho \vee}, f'_{\rho \vee}) \in s'$}{
+      \If{$x'_{\rho \vee} \in \mathrm{margLeaves}$}{
+        $\mathrm{descDens}[x'_{\rho \vee}] \gets \mathrm{descDens}[x'_{\rho \vee}] + f'_{\rho \vee}$
+      }
+    }
+
+    \For(// $L_d$ is list of descendents){$(x'_{\rho \vee} \mapsto L_d) \in \mathrm{ancMap}$}{
+      $L_d \gets L_d \cap \mathrm{margLeaves}$
+
+      \For{$\mathrm{desc} \in L_d$}{
+        $\mathrm{descDens}[x'_{\rho \vee}] \gets \mathrm{descDens}[x'_{\rho \vee}] + f'_{\rho \vee}$
+      }
+    }
+
+    $s' \gets \mathrm{descDens}$ as a list sorted according to the leaves
+
+    \Return{$s'$}
+  \end{algorithm}
+
+\end{document}

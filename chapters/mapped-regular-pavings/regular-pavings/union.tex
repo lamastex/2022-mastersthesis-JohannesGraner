@@ -1,0 +1,100 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../regular-pavings.tex]{subfiles}
+
+\begin{document}
+  
+  Given two RPs $s \ind 1, s \ind 2 \in \rps$ with the same root box $\x_\rho$, 
+  their union is given by the RP whose leaf boxes are 
+  the superimposed leaf boxes of $s \ind 1$ and $s \ind 2$.
+
+  This operation is given as Algorithm 1 in \cite{mrp-raaz-harlow-tucker}, 
+  but has to be adapted to the bitstring representation.
+  The bitstring version of the union algorithm is given in Algorithm \ref{alg:rpunion}.
+
+  In the algorithm, $\fct{head}(s)$ is the first element of $s$, 
+  $\fct{tail}(s)$ is $s$ with $\fct{head}(s)$ removed,
+  $l :: s$ is the list $s$ with element $l$ prepended,
+  $s_1 + s_2$ is the concatenation of lists $s_1$ and $s_2$, and 
+  $s_1 - s_2$ is $s_1$ with any elements from $s_2$ removed.
+  Comments in all algorithms start with //.
+
+  The union operation on RPs with the same root box is associative and commutative.
+  Additionally, if $s \in \rps$ with root box $\x_\rho$, and 
+  $s_0 \in \Sz_0$ is the RP with root box $\x_\rho$ with no splits (the root node),
+  then $\RPUnion(s, s_0) = s = \RPUnion(s_0, s)$, as 
+  $s_0$ is the neutral element for the union operation.
+  Hence, $\rps$ with a fixed root box $\x_\rho$
+  is a commutative monoid under the union operation.
+  
+  However, if $s$ is a sparse RP as described in Section \ref{sec:sparse}, 
+  union with $s_0$ yields the dense representation of $s$.
+  Since the dense and sparse versions of $s$ represent the same RP in $\rps$, 
+  this does not break the monoidal properties of $\rps$,
+  but it is worth considering for performance reasons due to 
+  the typically much larger memory footprint of dense RPs.
+
+  \begin{algorithm}
+    \caption{RPUnion($s \ind 1, s \ind 2$)}
+    \label{alg:rpunion}
+    \KwIn{$\s \ind 1, s \ind 2 \in \rps$ as non-empty ordered lists of leaves.}
+    \KwOut{$s$, the ordered list of leaves in the union of $s \ind 1$ and $s \ind 2$.}
+
+    $s \gets []$
+
+    $L_1 \gets s \ind 1$,
+    $L_2 \gets s \ind 2$
+
+    \While{$\left(L_1 \neq \emptyset\right) \wedge \left(L_2 \neq \emptyset\right)$}{
+      \If{$L_1 = \emptyset$}{
+        $s \gets s + L_2$
+      } \ElseIf{$L_2 = \emptyset$} {
+        $s \gets s + L_1$
+      } \Else{
+        $l_1 \gets \fct{head}(L_1)$,
+        $l_2 \gets \fct{head}(L_2)$
+
+        \If{$l_1 = l_2$}{
+          $s \gets l_1 :: s$
+
+          $L_1 \gets \fct{tail}(L_1)$,
+          $L_2 \gets \fct{tail}(L_2)$
+        } \ElseIf{$l_2$ \normalfont{is an ancestor of} $l_1$} {
+          $s' \gets l_1 :: $ (siblings of nodes between $l_1$ (inclusive) and $l_2$ (exclusive)).
+
+          $s' \gets s'$ sorted according to left-to-right ordering.
+
+          $s \gets s + (s' - s)$
+
+          $s \gets s$ with ancestors removed
+
+          $L_1 \gets \fct{tail}(L_1)$,
+          $L_2 \gets \fct{tail}(L_2)$
+        } \ElseIf{$l_1$ \normalfont{is an ancestor of} $l_2$} {
+          $s' \gets l_2 :: $ (siblings of nodes between $l_2$ (inclusive) and $l_1$ (exclusive)).
+
+          $s' \gets s'$ sorted according to left-to-right ordering.
+
+          $s \gets s + (s' - s)$
+
+          $s \gets s$ with ancestors removed
+
+          $L_1 \gets \fct{tail}(L_1)$,
+          $L_2 \gets \fct{tail}(L_2)$
+        } \ElseIf{$l_1 < l_2$} {
+          $s \gets l_1 :: s$
+
+          $s \gets s$ with ancestors removed
+
+          $L_1 \gets \fct{tail}(L_1)$
+        } \Else(// $l_2 < l_1$) {
+          $s \gets l_2 :: s$
+
+          $s \gets s$ with ancestors removed
+
+          $L_2 \gets \fct{tail}(L_2)$
+        }
+      }
+    }
+    \Return{$s$}
+  \end{algorithm}
+\end{document}

@@ -1,0 +1,25 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../global-optimization.tex]{subfiles}
+
+\begin{document}
+  This test requires only the basic assumptions on $f$ and 
+  consists of comparing the value of $f$ at 
+  some point to the lower bounds $\ul F_i$.
+  If $x \in \X \backslash \x_i$ and $f(x) < \ul F_i$, 
+  then the global minimum of $f$ cannot possibly be in $\x_i$ 
+  since there is a point $x \notin \x_i$ with 
+  $f(x) < f(x')$ for all $x' \in \x_i$.
+
+  The most promising interval to check for a test point is 
+  the interval with minimal $\ul F_i$, and since 
+  there is no way to know which point in $\x_i$ yields the minimal value, 
+  the midpoint is chosen for simplicity.
+
+  Hence, the midpoint cut-off test is performed as follows, given $\{ \x_i \}_{i=1}^b$.
+
+  \begin{enumerate}
+    \item Find the index $k = \argmin_i \ul F_i$ that corresponds to the best guess of minimizing interval.
+    \item Find the midpoint $c = \Imid \x_k$.
+    \item Discard all intervals $\x_j$ where $\ul F_j > \ul F([c,c])$.
+  \end{enumerate}
+\end{document}

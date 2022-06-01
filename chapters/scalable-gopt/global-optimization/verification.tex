@@ -1,0 +1,33 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../global-optimization.tex]{subfiles}
+
+\begin{document}
+  When there are no remaining interval with maximal relative diameter greater than $\epsilon$, 
+  the candidate intervals are checked to see if a minimum can be verified in them.
+  Note that this step is only possible when 
+  $f$ is twice continuously differentiable, 
+  and is done by checking two conditions.
+  First, if $N'_{GS}(\x) \subseteq \Iint(\x)$, 
+  then both existence and uniqueness of a stationary point in $\x$ is verified.
+  Second, the positive definiteness of $\nabla^2 F(\x)$ is 
+  checked to verify that the stationary point is a minimum.
+  This is done by the following theorem, Theorem 14.1 in \cite{toolbox-hammer}.
+
+  \begin{theorem}
+    Let $\H \in \Iz \Rz^{n \times n}$ and $S$ be defined by $\S = I - \frac{1}{\kappa} \H$, with \linebreak $\dmrel \H \le \kappa \in \Rz$.
+    If $\S$ satisfies
+    \begin{equation*}
+      \S \cdot \z \subseteq \Iint (\z)
+    \end{equation*}
+    for an interval vector $\z \in \Iz \Rz^n$, then $\rho(B) < 1$ for all $B \in \S$, and all symmetric matrices $A \in \H$ are positive definite.
+  \end{theorem}
+  where $\H = \nabla^2 F(\x)$.
+
+  Note that this can only verify that a unique minimizer is found in the interval,
+  there are no guarantees that a given candidate interval contains 
+  a global minimizer except in the case where there is only one candidate interval.
+  If an interval cannot be verified to contain a minimizer, 
+  that interval should still be kept in the list of candidates since, 
+  for example, the global minimum could be a continuum of points in that interval.
+
+\end{document}

@@ -1,0 +1,21 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../scalable-hists.tex]{subfiles}
+
+\begin{document}
+  The algorithms presented in \cite{mrp-raaz-harlow-tucker}, \cite{srp-mde-raaz-teng} and 
+  \cite{scala-density-tree} are top-down
+  in the sense that they begin with a root box which is 
+  recursively split according to a randomized priority function.
+  In \cite{scala-density-tree} an algorithm for backtracking by merging leaves
+  according to a priority function is presented, but only explored as far as backtracking
+  after the splitting algorithm is run.
+  Here, an alternative approach is presented,
+  which is bottom-up, i.e.~starting from each element in the dataset itself, 
+  and more naturally suitable to distributed computing.
+  
+  \subsection{Mapping to finest resolution}
+    \subfile{merging/finest-res.tex}
+
+  \subsection{Distributed backtracking}
+    \subfile{merging/dist-backtracking.tex}
+\end{document}

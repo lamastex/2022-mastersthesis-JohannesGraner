@@ -1,0 +1,30 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../trend-calculus.tex]{subfiles}
+
+\begin{document}
+  Time series can fluctuate rapidly, and need to be smoothed before determining trends.
+  The smoothing is accomplished by only considering the 
+  highest and lowest point within a window of specified size.
+  By increasing the window size, smaller fluctuations inside the window are disregarded as noise, 
+  while the highest and lowest points are taken to be indicative of the current trend.
+
+  In the Trend Calculus algorithm, an up trend is defined as a period with 
+  ``higher highs and higher lows", while a down trend has ``lower highs and lower lows".
+
+ A complete description of the Trend Calculus algorithm is as follows.
+
+  \subsection{Algorithm}
+    \subfile{trend-calculus/algorithm.tex}
+
+  \subsection{Trend Calculus as a sketch}
+    \subfile{trend-calculus/sketch.tex}
+
+  \subsection{Implementation}
+    \subfile{trend-calculus/spark.tex}
+
+  \subsection{Trinomial Random Walk Showcase}
+    \subfile{trend-calculus/random-walk.tex}
+
+  \subsection{Results}
+    \subfile{trend-calculus/results.tex}
+\end{document}

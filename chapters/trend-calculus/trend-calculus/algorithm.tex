@@ -1,0 +1,135 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../trend-calculus.tex]{subfiles}
+
+\begin{document}
+  The input to the algorithm is a window size $s \ge 2$ and a time series $T$ with $N \ge 2s$ observations.
+
+  \begin{equation*}
+    T = \{ p_i = (t_i, x_i) \in \mathbb{R}^2 : t_i < t_j, 1 \le i < j \le N \}
+  \end{equation*}
+  To create the windows, define the function $f_s : T^s \to T^2$ as
+
+  \begin{align*}
+    f_s(p_1, \dots, p_s) = ( & \max_{t_i} (\min_{x_i} \{ (t_i, x_i) : i = 1,\dots,s \}), \\
+    & \min_{t_i} (\max_{x_i} \{ (t_i, x_i) : i = 1,\dots,s \}) )
+  \end{align*}
+  which finds the latest minimum and earliest maximum among the points $p_1,\dots,p_s$. 
+
+  Assume that $N$ is divisible by $s$ 
+  (otherwise, only consider $N - (N \mod s)$ points of the series).
+  Let $n = \frac{N}{s} \in \Zz_{\ge 2}$ and 
+
+  \begin{equation*}
+    W = \{ w_k = (l_k, h_k) = f_s(p_{1+s(k-1)},\dots,p_{s+s(k-1)}) : k = 1,\dots,n\}. 
+  \end{equation*}
+  Then $W$ is the set of $n$ non-overlapping windows of size $s$ that summarize the time series $T$ by 
+  the minimum (low) $l_k$ and maximum (high) $h_k$.
+  For each $w_k \in W$, define the trend for that window as 
+
+  \begin{equation*}
+    \tau_k = \begin{cases}
+      0, & k = 1 \\
+      \tau(w_{k-1}, w_k), & k > 1
+    \end{cases}
+  \end{equation*}
+  where $\tau : (\Rz^2)^2 \to \{-1,0,1\}$ is given by
+
+  \begin{equation*}
+    \tau(w_{k-1}, w_k) = \sign(\sign \circ \pi_x(l_k - l_{k-1}) + \sign \circ \pi_x(h_k - h_{k-1}))
+  \end{equation*}
+  where $\pi_x : \mathbb{R}^2 \to \mathbb{R}$ is the projection $(t,x) \mapsto x$.
+
+  Once an initial trend has been identified, 
+  each point thereafter is either part of an up or a down trend.
+  However, there may be points after the initial period that are assigned a zero trend.
+  The following step corrects this.
+  Let $\tilde n = \min \{ k : \tau_k \le 0 \}$ be the index of the first window to have a non-zero trend.
+  Note that $\tilde n \ge 2$ since $\tau_1 = 0$ by definition, and let
+
+  \begin{equation*}
+    w_k^* = \begin{cases}
+      w_k, & k \le \tilde n \\
+      w_{k - \#\{\tilde n < j < k : t_j = 0\}}, & \tau_k \ne 0 \text{ and } k > \tilde n \\
+      (\min_x\{a,b\}, \max_x\{a,b\}), & \tau_k = 0 \text{ and } k > \tilde n 
+    \end{cases}
+  \end{equation*}
+  where $a = \max_t\{l_{k-1}, h_{k-1}\}, b = \min_t\{l_k, h_k\}$.
+  This creates intermediate windows at every point where 
+  the trend is 0 after the first trend has been identified, 
+  and inserts them at the correct places in the sequence $(w_k^*)$.
+  The length of this sequence is $n^* = n + \#\{k > \tilde n : \tau_k = 0\}$.
+  This sequence is then used to define the corrected trends $\tau_k^*$.
+
+  \begin{equation*}
+    \tau_k^* = \begin{cases}
+      0, & k < \tilde n \\
+      \tau(w_{k-1}^*, w_k^*), & k \ge \tilde n \text{ and } \tau(w_{k-1}^*, w_k^*) \ne 0 \\
+      \tau_{k-1}^*, & \text{otherwise}
+    \end{cases}
+  \end{equation*}
+  If a zero trend is found with the corrected windows as well, the last trend is carried forward.
+  This ensures that every trend after the initial period is non-zero.
+
+  The now non-zero trends are used to define trend changes, called \textit{reversals}, 
+  of trends as $r_1 = 0$, $r_k = \sign(\tau_{k-1}^* - \tau_k^*), k > 1$.
+  Let
+
+  \begin{equation*}
+    T^*(k) = \begin{cases}
+      \emptyset, & r_k = 0 \\
+      \{ l_{k-1} \}, & r_k = 1 \\
+      \{ h_{k-1} \}, & r_k = -1 
+    \end{cases}
+  \end{equation*}
+  If $T^*(k) \ne \emptyset$, then $T^*(k)$ is a singleton and 
+  that element is called a \textit{reversal point}.
+
+  This is used to define a new time series 
+  $T^{(1)} = \bigcup_{k=1}^{n^*} T^*(k) \subset T$
+  which contains only the points of T where a trend reversal happens.
+  The reversal points can be used to determine the trend at 
+  every point since the reversal points are the points at which the trend changes.
+  The trend at a point $p_i$ is 
+  
+  \begin{equation*}
+    \trend(p_i) = \begin{cases}
+      0, & t_i < t_j \text{ for all } p_j \in T^{(1)} \\
+      \tau^*(\tilde n) (-1)^{\#\{p_j \in T^{(1)} : t_j \le t_i\}}, & \text{otherwise}
+    \end{cases}
+  \end{equation*}
+  i.e. the trend starts at 0 and switches sign at the reversal points.
+
+  \subsubsection{Multiple iterations}
+
+  The output of the algorithm, $T^{(1)}$,
+  is then used as input for another iteration with 
+  the same window size to get $T^{(2)} \subset T^{(1)}$.
+  This is repeated until $\#T^{(m)} < s$, 
+  at which point $T^{(m^*)} = \emptyset \; \forall m^* > m$ and 
+  a decreasing sequence of sets $\mathcal{T}$ is given by
+  $\mathcal{T} = (T, T^{(1)}, \dots, T^{(m)})$, where 
+  $T \supset T^{(1)} \supset \cdots \supset T^{(m)}$.
+  The \textit{order} of a reversal point $p$ is defined as 
+  $\rho(p) = \max \{ k : p \in T^{(k)} \}$.
+  A point $p$ that is not a reversal point, 
+  i.e. $p \in T \backslash T^{(1)}$, 
+  has reversal order 0, $\rho(p) = 0$.
+
+  Since $\mathcal{T}$ is a decreasing sequence of sets, 
+  the original time series $T$ can be augmented with 
+  information about every reversal that has occurred thus far.
+  Each point in the augmented time series $T_{tc}$ is 
+  $(t_i,x_i,\rho_i) \in \mathbb{R}^2 \times \{ -m,\dots,m \}$, where 
+  $\rho_i = \trend(p_i) \cdot \rho(p_i)$.
+
+  If a point is a reversal of order $r$, 
+  it is augmented with $r$ if it is 
+  a local minimum and $-r$ if it is a local maximum. 
+  If a point is not a reversal, it will be augmented with 0.
+
+  Since $T^{(k)} = \{ p : \rho^*(p) \ge k \} $, 
+  $T_{tc}$ contains all information necessary to recreate $\mathcal{T}$
+  as well as information about the type of reversal.
+  Hence, it also contains all information necessary to 
+  determine the trend at every point of $T$.
+\end{document}

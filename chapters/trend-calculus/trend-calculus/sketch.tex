@@ -1,0 +1,32 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../trend-calculus.tex]{subfiles}
+
+\begin{document}
+  The Trend Calculus algorithm is easily applicable to 
+  streaming time series where each point can only be read once, and 
+  memory usage while processing is not allowed to grow with the input size $N$ 
+  (or at least grow very slowly compared to $N$).
+  Note that almost every step in the algorithm 
+  depends only on the current and last window.
+  The only exception is if all orders of reversals are to be computed in a single pass, 
+  in which case the last window for each reversal order must be kept in memory, 
+  as well as a buffer of reversals of lower order that will make up the next window.
+
+  A noteworthy feature of the algorithm when applied 
+  to a streaming time series is that the order of 
+  previously identified reversal points may increase over time.
+  This is a consequence of needing two complete windows ($2s$ points)
+  of reversal points of a given order before a higher order reversal can be identified.
+
+  A single window consists of two sets (high and low) of two floating point values 
+  (time and value), and is therefore very cheap to store.
+  In the worst case scenario,
+  i.e. $s = 2$ and each window contains a reversal,
+  the number of reversal orders grows linearly with $N$, but
+  in practice the number of reversal orders grow logarithmically with $N$ \cite{trendcalculus}.
+  
+  Hence, $\mathcal{O}(\log N)$ need to be stored to compute all reversal orders.
+  This grows slowly enough that it is suitable for streaming applications.
+  As an example, a financial time series with minute-level resolution over 10 years 
+  ($N \approx 2.86 \cdot 10^6$) was shown to have 15 reversal orders \cite{spark-trendcalculus-examples}.
+\end{document}

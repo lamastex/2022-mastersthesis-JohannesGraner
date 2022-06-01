@@ -1,0 +1,35 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../main.tex]{subfiles}
+
+\begin{document}
+
+  When handling multi-dimensional data in a computer, 
+  there is a problem of how to represent the data in an efficient manner.
+  A common family of data structures for this is trees.
+  This family includes, among many others, binary search trees, quadtrees, and k-d trees.
+  It is often the case that a specific type of tree is 
+  developed to suit a particular data type \cite{mrp-raaz-harlow-tucker}.
+  Mapped regular paving is a type of tree that is well suited for 
+  representing multi-dimensional data that is piece-wise constant, or 
+  can be well approximated by piece-wise constant functions.
+  Moreover, arithmetic operation can be performed over mapped regular pavings.
+
+  A notable use-case is density estimation through histograms, 
+  where the density $f$ for any continuous random variable can be 
+  consistently estimated given some conditions on the growth of the histogram 
+  \cite{histogram-consistency-nobel-lugosi},
+  with universal performance guarantees for a given data sample of size $n$ \cite{devroye-lugosi}.
+
+  \section{Regular pavings (RPs)}
+    \subfile{mapped-regular-pavings/regular-pavings.tex}
+
+  \section{Mapped regular pavings (MRPs)}
+    \subfile{mapped-regular-pavings/mrp.tex}
+
+  \section{MRPs as histograms}
+    \subfile{mapped-regular-pavings/histograms.tex}
+
+  \section{Collated regular pavings (CRPs)}
+    \subfile{mapped-regular-pavings/crp.tex}
+
+\end{document}

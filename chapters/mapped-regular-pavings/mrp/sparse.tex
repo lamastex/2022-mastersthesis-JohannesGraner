@@ -1,0 +1,52 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../mrp.tex]{subfiles}
+
+\begin{document}
+  Depending on what the MRP represents, the set $\Az$ may 
+  contain an element that is natural to consider as a base, or neutral element.
+  For example, let $\Az = \{ \True, \False \}$ and the MRP represents a 
+  discretization of some geometric object where boxes that
+  intersect the object are given the $\True$ value and all other boxes have the $\False$ value.
+  Then the value $\False$ could be considered as the neutral element, 
+  representing the lack of intersection with the object.
+
+  Similarly, let $\Az = \Zz_{\ge 0}$ and the MRP represents 
+  the number of data points that fall into each box,
+  then the value $0$ would be the base element, representing the lack of any data.
+  If such a neutral element $e \in \Az$ exists, 
+  the memory footprint of the MRP can be reduced significantly by 
+  only storing the leaves associated with a value other than $e$.
+  An MRP in this compressed format is called a \textit{sparse} MRP since 
+  the set of leaves stored is sparse in the the full set of leaves.
+  An MRP that is not sparse is called \textit{dense}.
+
+  Let $s_D = \{ (l_1, a_1),\dots,(l_m, a_m) \}$ be 
+  a dense $\Az$-MRP with a neutral element $e \in \Az$.
+  The corresponding sparse $\Az$-MRP is then $s_S = \{ (l_i, a_i) \in s_D : a_i \neq e \}$.
+  An example of a sparse MRP is given in Figure \ref{fig:sparse-mrp}.
+
+  \subfile{sparse/sparse-graphic.tex}
+
+  In order to use sparse MRPs effectively, 
+  algorithms for RP or MRP operations have to work even when all leaves are not present.
+  Algorithms \ref{alg:rpunion} and \ref{alg:mrpoperate} are both written with sparse MRPs in mind,
+  and work for both sparse and dense trees.
+
+  However, the result of $\RPUnion(s \ind 1, s \ind 2)$ is often much less sparse than $s \ind 1$ or $s \ind 2$.
+  This is because when one RP contains a node that is an ancestor to a node in the other tree, 
+  all missing nodes in that subtree have to be included in the union.
+  For example, if $s \ind 1 = \{ \rho_L \}$, and 
+  $s \ind 2 = \{ \rho_{LLL} \}$ are sparse Boolean MRPs with $e = \False$, then 
+  $\RPUnion(s \ind 1, s \ind 2) = \{ \rho_{LLL}, \rho_{LLR}, \rho_{LR} \}$ 
+  in order to retain the information that 
+  both $\rho_L$ and $\rho_{LLL}$ were part of the original trees.
+  This is illustrated in Figure \ref{fig:sparse-union}.
+  In this case, the union could be represented with the second operand
+  by combining leaves associated with the same value.
+  This is implemented as $\mathrm{MinimiseLeaves}$ in \cite{mrp-raaz-harlow-tucker}.
+  One could implement that algorithm for this representation of MRPs, but is not done here.
+  Figure \ref{fig:mrpoperate} shows a scenario where combining leaves is not possible.
+
+  \subfile{sparse/sparse-union-graphic.tex}
+  
+\end{document}

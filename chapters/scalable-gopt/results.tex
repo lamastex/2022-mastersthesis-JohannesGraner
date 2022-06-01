@@ -1,0 +1,62 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../scalable-gopt.tex]{subfiles}
+
+\begin{document}
+  Running Algorithm \ref{alg:gopt-scalable} on clusters, 
+  using worker with 2 cores and 8 GB memory each, 
+  the timings in Table \ref{tab:scalable-gopt-rosenbrock} were recorded.
+  The objective function used is the Rosenbrock function given in Equation \ref{eq:rosenbrock}.
+  Clearly, the speedup is negligible.
+  A reason for this could be that the Rosenbrock function has a single global minimum at $(1,\dots,1)$ 
+  as well as a local minimum at $(-1,1,\dots)$ for $4 \le d \le 7$, 
+  where $d$ is the domain dimension.
+  The recorded timings use $N = 5$ and four partitions of the interval $[-10,10]^5$.
+
+  \begin{equation}
+    \label{eq:rosenbrock}
+    f(x) = \sum_{i = 1}^{d - 1} 100 ( x_{i+1} - x_i^2)^2 + (1 - x_i)^2, \: x \in \Rz^d
+  \end{equation}
+
+  \begin{table}[ht]
+    \centering
+    \begin{tabular}{|c|c|}
+      \hline
+      No. Workers & time (s) \\
+      \hline
+      2 & 22.8 \\
+      \hline
+      4 & 22.0 \\
+      \hline
+    \end{tabular}
+    \caption{Timings for the Rosenbrock function in 5 dimensions, using 4 partitions.}
+    \label{tab:scalable-gopt-rosenbrock}
+  \end{table}
+
+  Table \ref{tab:scalable-gopt-many-min} contains the results when running the
+  algorithm for the function in Equation \ref{eq:many-min}, 
+  which has many sharp minima close to the global minimum $f(0) = -1$.
+  Parameters used were $d = 3$ dimensions and $N = 4$ partitions.
+  The initial search box was $[-0.5543245,0.589764]^d$, 
+  chosen arbitrarily but not symmetric about the origin.
+  No speedup is seen in this case either.
+
+  \begin{equation}
+    \label{eq:many-min}
+    f(x) = - \prod_{i=1}^d \left( \cos(100 \pi x_i) \exp(-\frac{x_i^2}{200}) \right) ^ 2
+  \end{equation}
+
+  \begin{table}[ht]
+    \caption{Timings for function \ref{eq:many-min} in 3 dimensions, using 4 partitions.}
+    \label{tab:scalable-gopt-many-min}
+    \centering
+    \begin{tabular}{|c|c|}
+      \hline
+      No. Workers & time (s) \\
+      \hline
+      2 & 10.98 \\
+      \hline
+      4 & 13.68 \\ 
+      \hline
+    \end{tabular}
+  \end{table}
+\end{document}

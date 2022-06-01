@@ -1,0 +1,52 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../main.tex]{subfiles}
+
+\begin{document}
+
+  % scalable algorithms
+  With the advent of powerful computers,
+  many previously infeasible approaches to statistics are now commonplace.
+  Methods such as bootstrapping, Monte Carlo methods, and kernel density estimation are
+  very computationally intensive but have led to
+  great advances in human knowledge.
+  The rapid advances in computer technology have allowed these techniques to
+  become more powerful each time better computer hardware is developed.
+  However, there are limits on how powerful a single computer can be,
+  and many methods in computational statistics are limited by the performance of that single computer.
+
+  One approach to circumventing this problem is to adapt the statistical methods
+  to efficiently use more than a single machine in the computations.
+  This is called distributed computing and introduces several challenges,
+  but can, if implemented correctly and efficiently,
+  easily be scaled to use an arbitrary number of comparatively weak computers
+  with a total computing power much greater than any single machine.
+  Several computers working on the same problem in a distributed fashion
+  is called a \textit{cluster} and each computer is referred to as a \textit{worker}.
+
+  The main challenge in distributed computing is that
+  any one worker can only access its own memory,
+  meaning that the state of the entire computation is usually not accessible to a worker.
+  For example, in density estimation each worker only
+  has access to a small part of the data set, 
+  and the algorithm must be adjusted accordingly.
+  The plan for this thesis is to explore and implement distributed (also called \textit{scalable})
+  algorithms for three different problems.
+
+  The first problem is global optimization, i.e. finding global extrema for a real-valued function.
+  This is an important problem in many fields of mathematics,
+  including e.g. maximum likelihood estimation in statistics.
+  The problem is approached using rigorous computation and interval arithmetic.
+
+  The second problem is finding summary statistics of time series.
+  It can be very difficult to intuitively find and understand features
+  of long-running time series, so summary statistics are used to extract such features.
+  One such feature is the trend (long- or short-term) of the time series, which
+  this thesis focuses on.
+
+  The third and final problem considered in the thesis is non-parametric density estimation.
+  When analyzing a data set, estimating the underlying distribution of the data can be very useful,
+  but often no assumptions can reasonably be made on what this distribution might be.
+  Histograms are a well-known class of non-parametric density estimators,
+  and this thesis explores a scalable tree-based histogram estimator for arbitrary densities.
+
+\end{document}

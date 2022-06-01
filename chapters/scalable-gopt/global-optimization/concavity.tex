@@ -1,0 +1,20 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../global-optimization.tex]{subfiles}
+
+\begin{document}
+  This test requires that $f$ is twice continuously differentiable.
+  If $\x$ is contained in the interior of $\X$, 
+  then $f$ can only have its global minimum in $\x$ if $f$ is concave over $\x$.
+  A necessary condition for concavity is that the 
+  Hessian $\nabla^2 f$ is positive semi-definite, 
+  which in turn has the necessary condition that 
+  all diagonal elements of $\nabla^2 f$ are non-negative.
+
+  The test is as follows, given $\x \subseteq \Iint(\X)$ and 
+  the diagonal elements of $\nabla^2 F(\x)$.
+
+  \begin{itemize}
+    \item If, for any $i = 1,\dots,n$, $\ul {\nabla^2 F(\x)} < 0$, then remove $\x$ from the search.
+  \end{itemize}
+
+\end{document}

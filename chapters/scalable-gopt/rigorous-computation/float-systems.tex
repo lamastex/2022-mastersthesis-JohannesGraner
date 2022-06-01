@@ -1,0 +1,27 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../rigorous-computation.tex]{subfiles}
+
+\begin{document}
+  Real numbers generally have infinite expansions regardless of base (binary, decimal, etc.).
+  Since computers do not have infinite memory, most real numbers cannot be perfectly represented in a computer, instead having an approximate, finite representation in a \textit{floating point system}.
+
+  A number in a floating point system is in the form
+
+  \begin{equation}
+    x = \pm m \cdot b^e = \pm 0.m_1 m_2 \dots m_l \cdot b^e
+  \end{equation}
+
+  where the base $b$ is an integer $b \ge 2$, $m$ is the mantissa of length $l$, consisting of integers $1 \le m_1 \le b-1$ and $0 \le m_k \le b-1$ for $k = 2,\dots,l$, and $e$ is an integer such that $e_{min} \le e \le e_{max}$.
+  A floating point system is defined as $R(b, l, e_{min}, e_{max})$ and this forms a screen for which numbers are representable in the system.
+
+  To represent a real number $x$ in a floating point system $R$, the number is rounded to a number that is representable in the system.
+  The rounding can be upwards (to the smallest number in $R$ that is larger than $x$), downwards (to the largest number in $R$ that is smaller than $x$), or to the nearest number in $R$. In this way, $R$ forms a screen for the real numbers. 
+
+  The result of any operation (e.g. multiplication) must also be rounded to be representable in the floating point system.
+  If a large number of such operations are carried out, significant round-off error can accumulate and yield a final result that is unusable \cite{sainudiin-phylo}.
+
+  For a more in-depth description of floating point systems and their arithmetic, see e.g. \cite{toolbox-hammer}.
+
+  
+
+\end{document}

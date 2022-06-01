@@ -1,0 +1,32 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../mapped-regular-pavings.tex]{subfiles}
+
+\begin{document}
+  
+  Let $s \in \Sz_{0:\infty}$ be an RP with root box $\x_\rho$ and let $\Az$ be a non-empty set.
+  By augmenting each leaf node $l \in \Lz(s)$ with an element in $\Az$, 
+  a piece-wise constant function $f: \Lz(s) \to \Az$ is defined.
+  This function can be extended to a piece-wise function $f_x: \x_\rho \to \Az$ by 
+  first mapping $x \in \x_\rho$ to $l(x) \in \Lz$, and
+  then applying $f$, i.e.~$f_x = f \circ l$.
+  This is well-defined due to $s$ being a partition of $\x_\rho$, so 
+  $x$ can only belong to a single leaf box.
+  An RP $s$ together with the set $\Az$ and 
+  piece-wise constant function $f$ is referred to as an $\Az$-MRP.
+
+  Since RPs are stored as sorted lists of leaves, 
+  it is natural to store MRPs in a very similar way.
+  Each leaf $l$ is augmented with $f(l)$ and stored in a list 
+  $[(l_1, f(l_1)), (l_2, f(l_2)), \dots, (l_m, f(l_m))]$.
+  If $s$ is an $\Az$-MRP, let $\Lz(s)$ be the underlying RP as an ordered set of leaves.
+  As described in \cite{mrp-raaz-harlow-tucker}, it is possible to 
+  define operations on MRPs with the same root box $\x_\rho$.
+
+  \subsection{Sparse MRPs}
+    \label{sec:sparse}
+    \subfile{mrp/sparse.tex}
+
+  \subsection{Operations on MRPs}
+    \subfile{mrp/operate.tex}
+
+\end{document}

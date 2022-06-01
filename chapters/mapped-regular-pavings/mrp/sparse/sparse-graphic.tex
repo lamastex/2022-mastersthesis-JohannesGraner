@@ -1,0 +1,31 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../sparse.tex]{subfiles}
+
+\begin{document}
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+
+      % tree
+      \node[rpn, label=above:$\rho$] (x) {};
+      \node[rpn, below left=0.4cm and 0.6cm of x] (xl) {};
+      \node[rpn, below right=0.4cm of xl, label=below:$\rho_{LR}$] (xlr) {};
+
+      \node[rpn, below right=0.4cm and 0.6cm of x, label=below:$\rho_R$] (xr) {};
+
+      \path[-,draw]
+      (x) edge node {} (xl)
+      (x) edge node {} (xr)
+      (xl) edge node {} (xlr)
+      ;
+
+      % boxes
+      \node[box, below=of xl, minimum width=1.5cm, minimum height=1.5cm] (blr) {$(\x_{LR},$ \\ $f_{LR})$};
+      \node[box, below=0pt of blr, minimum width=1.5cm, minimum height=1.5cm] (bll) {$(\x_{LL},$ \\ $e)$};
+      \node[box, below right=-1.5cm and 0pt of blr, minimum width=1.5cm, minimum height=3cm] (br) {$(\x_{R},$ \\ $f_{R})$};
+
+    \end{tikzpicture}
+    \caption{Sparse $\Az$-MRP with neutral element $e \in \Az$. The node $\rho_{LL}$ is not present in the tree since $f_{LL} = e$.}
+    \label{fig:sparse-mrp}
+  \end{figure}
+\end{document}

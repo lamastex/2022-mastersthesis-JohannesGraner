@@ -1,0 +1,72 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../mrp.tex]{subfiles}
+
+\begin{document}
+  
+  The fundamental operation on $\Az$-MRPs is described in Algorithm \ref{alg:mrpoperate}.
+  This operation takes two $\Az$-MRPs with the same root box and
+  applies a function $\star: \Az \times \Az \to \Az$ to each pair of overlapping leaves.
+  MRPOperate is introduced as Algorithm 4 in \cite{mrp-raaz-harlow-tucker} and 
+  is adapted for bitstring representation and sparse MRPs in 
+  Algorithm \ref{alg:mrpoperate} below.
+
+  To accomodate sparse MRPs, the neutral element $e \in \Az$ must also be supplied to the algorithm.
+  If both MRPs are dense, then the neutral element argument is not used.
+  This ensures that the same implementation works for both sparse $\Az$-MRPs (as long as there is a neutral element in $\Az$), and for dense $\Bz$-MRPs where $\Bz$ does not necessarily contain a neutral element.
+  An example of $\MRPOperate(s \ind 1, s \ind 2, +, 0)$ with $s \ind 1, s \ind 2$ being $\Zz$-MRPs is shown in Figure \ref{fig:mrpoperate}.
+
+  \begin{algorithm}
+    \caption{MRPOperate($s \ind 1, s \ind 2, \star, e$)}
+    \label{alg:mrpoperate}
+    \KwIn{
+      $s \ind 1, s \ind 2$, $\Az$-MRPs with the same root box, 
+      
+      $\star: \Az^2 \to \Az$, 
+      
+      $e \in \Az$, the neutral element (if $s \ind 1$ and $s \ind 2$ are both dense, then $e$ is not used).}
+    \KwOut{$s$, the $\Az$-MRP with the operation applied to overlapping leaves.}
+
+    $s_L \gets \RPUnion(\Lz(s \ind 1), \Lz(s \ind 2))$
+
+    $s \gets []$
+    
+    $L_1 \gets s \ind 1$,
+    $L_2 \gets s \ind 2$
+
+    \For{$l \in s_L$}{
+      \eIf{$\exists (l_1, v_1) \in L_1$ \normalfont{such that} $t(l, d(l_1)) = l$}{
+        $v_1' \gets v_1$
+        // matching node's or ancestor's value is passed down
+
+        \If{$l_1 = l$}{
+          $i \gets \mathrm{index}((l_1, v_1), L_1)$ // index starting at 1
+
+          $L_1 \gets L_1$ with the first $i$ elements removed
+        }
+      }{
+        $v_1' \gets e$
+      }
+
+      \eIf{$\exists (l_2, v_2) \in L_2$ \normalfont{such that} $t(l, d(l_2)) = l$}{
+        $v_2' \gets v_2$
+        // matching node's or ancestor's value is passed down
+
+        \If{$l_2 = l$}{
+          $i \gets \mathrm{index}((l_2, v_2), L_2)$ // index starting at 1
+
+          $L_2 \gets L_2$ with the first $i$ elements removed
+        }
+      }{
+        $v_2' \gets e$
+      }
+
+      $s \gets (l, v_1' \star v_2') :: s$
+    }
+
+  \Return{$s$}
+
+  \end{algorithm}
+
+  \subfile{operate/operate-graphic.tex}
+
+\end{document}

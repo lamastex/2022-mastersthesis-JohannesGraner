@@ -1,0 +1,30 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../global-optimization.tex]{subfiles}
+
+\begin{document}
+  This test requires that $f$ is twice continuously differentiable.
+  For $\x \subseteq \Iint (\X)$, a global (or local) minimum 
+  $x \in \x$ must satisfy $\nabla f(x) = 0$.
+  This requirement can be exploited by performing 
+  one step of the Newton Gauss-Seidel method for finding zeros.
+  
+  The interval extension of the method is given by computing 
+  $\A = \R \cdot \nabla^2 F(\x)$ and $\b = \R \cdot \nabla f(\Imid(\x))$, 
+  where $\R \approx (\Imid (\nabla^2 F(\x)))^{-1}$.
+  The system $\A (\x - \Imid(\x)) = \b$ is then solved by Gauss-Seidel iteration.
+  Let $c = \Imid(\x)$ and $N'_{GS}(\x)$ be as follows.
+
+  \begin{align*}
+    \y &= \x \\
+    \y_i &= \left( c_i - \A_{ii}^{-1} \left( \b_i + \sum_{j=1,j \neq i}^n \A_{ij} (\y_j - c_j) \right) \right) \cap \y_i,\; i = 1,\dots,n \\
+    N'_{GS}(\x) &= \y
+  \end{align*}
+  The test is then as follows, given $\x \subseteq \Iint(\X)$ and $N'_{GS}(\x)$.
+
+  \begin{itemize}
+    \item If $N'_{GS}(\x)$ is empty, then $0 \notin \nabla F(\x)$ and $\x$ is discarded from the search.
+    \item If $N'_{GS}(\x) \subseteq \Iint(\x)$, then $\x$ is replaced by the contracted interval \linebreak $N'_{GS}(\x) \cap \x$.
+    \item If $0 \in \A_{ii}$, and $\x_i$ is split into a union of two non-empty intervals $\x_i^1$ and $\x_i^2$, then the Gauss-Seidel iteration continues on $\x_i^1$, and $\x_i^2$ is added to the list of intervals to be searched.
+  \end{itemize}
+  In total, the interval extended Newton Gauss-Seidel method can yield up to $n+1$ new intervals to search.
+\end{document}

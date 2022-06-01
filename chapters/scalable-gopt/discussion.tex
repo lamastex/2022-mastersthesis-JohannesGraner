@@ -1,0 +1,31 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../scalable-gopt.tex]{subfiles}
+
+\begin{document}
+  In both cases, running the original global optimization algorithm (i.e. without distributed computing) 
+  proved to be both faster and able to handle higher dimensions than the scalable extension.
+
+  The issue is that the global optimization algorithm is 
+  extremely slow on certain intervals, 
+  such as those containing the origin, but not the global minimum, 
+  in case of the Rosenbrock function.
+  This creates a situation where the worker assigned to 
+  the problematic interval takes much longer to finish than 
+  any of the other workers, leading to all but one worker being 
+  idle for the majority of each iteration.
+  Addressing this issue would require either improving the original algorithm or 
+  a way to interrupt computations on other workers once 
+  a better candidate interval is found.
+  
+  Unfortunately, improving the original algorithm is outside the scope of this thesis, 
+  and mid-computation communication between workers is not possible in native Apache Spark, 
+  hence another framework (e.g. MPI) would be required.
+  There are efforts to do mid-computation communication in Apache Spark, 
+  for example in the framework Maggy \cite{maggy}.
+  However, Apache Spark was chosen due to the ease of setting up the cluster and distributing the workload.
+  Using a more complex framework is also outside the scope of the thesis, 
+  leading to the conclusion that while it should be possible to implement a 
+  scalable global optimization routine as Algorithm \ref{alg:gopt-scalable}, 
+  an efficient implementation is not presented here.
+
+\end{document}

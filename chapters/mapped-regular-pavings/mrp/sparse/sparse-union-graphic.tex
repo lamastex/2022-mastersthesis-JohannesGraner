@@ -1,0 +1,91 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../sparse.tex]{subfiles}
+
+\begin{document}
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}
+
+      % s_1
+      \node[rpn, label=above:$\rho$] (x1) {};
+      \node[rpn, below left=0.4cm and 0.6cm of x1] (x1l) {};
+      \node[rpn, below left=0.4cm of x1l] (x1ll) {};
+      \node[rpn, below left=0.4cm and 0.2cm of x1ll, label=below:$\rho_{LLL}$] (x1lll) {};
+
+      \path[-,draw]
+      (x1) edge node {} (x1l)
+      (x1l) edge node {} (x1ll)
+      (x1ll) edge node {} (x1lll)
+      ;
+
+      % boxes_1
+      \node[box, below=1.7cm of x1l, minimum width=1.5cm, minimum height=1.5cm] (b1lr) {};
+      \node[label={center:$(\x_{LR},F)$}] () at (b1lr) {};
+
+      \node[box, below left=0pt and -1.5cm of b1lr, minimum width=0.75cm, minimum height=1.5cm] (b1llr) {};
+      \node[label={[label distance=-0.2cm, text depth=-1ex,rotate=90]center:$(\x_{LLR},F)$}] () at (b1llr) {};
+
+      \node[box, left=0pt of b1llr, minimum width=0.75cm, minimum height=1.5cm] (b1lll) {};
+      \node[label={[label distance=-0.2cm, text depth=-1ex,rotate=90]center:\scriptsize $(\x_{LLL},T)$}] () at (b1lll) {};
+
+      \node[box, below right=-1.5cm and 0pt of b1lr, minimum width=1.5cm, minimum height=3cm] (b1r) {};
+      \node[label={center:$(\x_{R},F)$}] () at (b1r) {};
+
+      % union symbol
+      \node[above right=0 and 0.3 of b1r] () {\Large $\bigcup$};
+      
+      % s_2
+      \node[rpn, right=4cm of x1, label=above:$\rho$] (x2) {};
+      \node[rpn, below left=0.4cm and 0.6cm of x2, label=below:$\rho_L$] (x2l) {};
+
+      \path[-,draw]
+      (x2) edge node {} (x2l)
+      ;
+
+      % boxes_2
+      \node[box, below=1.7cm of x2l, minimum width=1.5cm, minimum height=3cm] (b2l) {};
+      \node[label={center:$(\x_{L},T)$}] () at (b2l) {};
+
+      \node[box, right=0pt of b2l, minimum width=1.5cm, minimum height=3cm] (b2r) {};
+      \node[label={center:$(\x_{R},F)$}] () at (b2r) {};
+
+      % equals
+      \node[above right=0 and 0.3 of b2r] () {\Large =};
+
+      % union tree
+      \node[rpn, right = 4cm of x2, label=above:$\rho$] (x3) {};
+      \node[rpn, below left=0.4cm and 0.6cm of x3] (x3l) {};
+      \node[rpn, below left=0.4cm of x3l] (x3ll) {};
+      \node[rpn, below right=0.4cm of x3l, label=below:\scriptsize $\rho_{LR}$] (x3lr) {};
+      \node[rpn, below left=0.4cm and 0.2cm of x3ll, label=below:\scriptsize $\rho_{LLL}$] (x3lll) {};
+      \node[rpn, below right=0.4cm and 0.2cm of x3ll, label=below:\scriptsize $\rho_{LLR}$] (x3llr) {};
+
+      \path[-,draw]
+      (x3) edge node {} (x3l)
+      (x3l) edge node {} (x3ll)
+      (x3l) edge node {} (x3lr)
+      (x3ll) edge node {} (x3lll)
+      (x3ll) edge node {} (x3llr)
+      ; 
+      
+      % union boxes
+      \node[box, below=1.7cm of x3l, minimum width=1.5cm, minimum height=1.5cm] (b3lr) {};
+      \node[label={center:$(\x_{LR},T)$}] () at (b3lr) {};
+
+      \node[box, below left=0pt and -1.5cm of b3lr, minimum width=0.75cm, minimum height=1.5cm] (b3llr) {};
+      \node[label={[label distance=-0.2cm, text depth=-1ex,rotate=90]center:\scriptsize $(\x_{LLR},T)$}] () at (b3llr) {};
+
+      \node[box, left=0pt of b3llr, minimum width=0.75cm, minimum height=1.5cm] (b3lll) {};
+      \node[label={[label distance=-0.2cm, text depth=-1ex,rotate=90]center:\scriptsize $(\x_{LLL},T)$}] () at (b3lll) {};
+
+      \node[box, below right=-1.5cm and 0pt of b3lr, minimum width=1.5cm, minimum height=3cm] (b3r) {};
+      \node[label={center:$(\x_{R},F)$}] () at (b3r) {};
+
+
+    \end{tikzpicture}
+    \caption{
+      Union of the RPs belonging to two sparse Boolean MRPs with neutral element $F = \False$.
+    }
+    \label{fig:sparse-union}
+  \end{figure}
+\end{document}

@@ -1,0 +1,64 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../mapped-regular-pavings.tex]{subfiles}
+
+\begin{document}
+  
+  Let $x_{[n]} = (x_1, \dots, x_n)$ be a data set with $x_i \in \Rz^d$,
+  and let $\B \subset \Rz^d$ be an interval vector (box) such that $x_i \in \B$ for all $i$.
+  Note that $\x_{[n]}$ is not necessarily a set,
+  multiple occurrences of the same data point are allowed.
+
+  A histogram of $x_{[n]}$ is then a partition of $\B$ into $\b_1, \dots, \b_m$ such that
+  $\b_i \cap \b_j = \emptyset$ for all $i \neq j$ and
+  $\bigcup_{i = 1}^m \b_i = \B$,
+  together with the counts $\#x_1, \dots, \#x_m$ of the number of data points in each $\b_i$,
+  i.e. $\#x_i = \sum_{j=1}^n \mathbbm{1}(x_j \in \b_i)$.
+
+  Restricting the possible partitions to regular pavings of $\B$,
+  a natural way to represent histograms is $\Zz$-MRPs.
+  If the dimensionality $d$ of the data is small,
+  a dense $\Zz$-MRP can be enough.
+  However, when $d$ is large the histogram suffers from a curse of dimensionality since
+  the RP requires a much larger number of splits,
+  leading to a very large number of sub-boxes with no data ($\#x_i = 0$).
+  A solution to this problem is to use sparse $\Zz$-MRPs with neutral element 0.
+
+  Strategies for partitioning $\B$ into an RP based on stopping criteria 
+  to obtain minimum distance histogram esimates are 
+  presented in \cite{srp-mde-raaz-teng}, and 
+  a scalable implementation using Apache Spark and sparse bitstring RPs is 
+  given in \cite{scala-density-tree}.
+  Here, an alternative scalable implementation is presented,
+  one that is based on merging leaves of a sparse histogram instead
+  of splitting leaves of a dense histogram.
+
+  Assume $x_{[n]}$ is an independent and identically distributed sample of size $n$ from 
+  an underlying unknown density $f \in \mathcal{L}_1$, i.e. $f$ is any density.
+  A count based histogram of $x_{[n]}$ with 
+  $\Zz$-MRP $s$ can be used to estimate the density $f$ on $\B$ by
+  letting 
+  $f_{n, s}(x) = \frac{\#\x_{\rho \vee}}{n \, \vol (\x_{\rho \vee)})}$ if 
+  $x \in \x_{\rho \vee}$ and $\x_{\rho \vee}$ is a leaf box.
+
+  $f_{n, s}$, or $f_n$ for notational convenience, 
+  can be seen as a sparse $\Rz$-MRP with neutral element $0$.
+  This is also a type of histogram, 
+  using frequency density of boxes instead of frequency count.
+  When there is a need to distinguish between the two types of histograms,
+  they are referred to as count-based or density-based, respectively.
+
+  Since a density-based histogram is a density estimate,
+  operations that are usually performed on densities can
+  be performed on density-based histograms as well.
+  Two of the most important operations on densities are
+  marginalization and finding conditional densities, 
+  as together they allow for regression based on 
+  conditional densities of the joint density estimate.
+
+  \subsection{Marginalization}
+    \subfile{histograms/marginalization.tex}
+
+  \subsection{Conditional density}
+    \subfile{histograms/slice.tex}
+
+\end{document}

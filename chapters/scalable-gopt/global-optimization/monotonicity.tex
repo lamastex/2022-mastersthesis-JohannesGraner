@@ -1,0 +1,33 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../global-optimization.tex]{subfiles}
+
+\begin{document}
+  The monotonicity test requires that $f$ is 
+  continuously differentiable everywhere in $\X$, and 
+  determines if $f$ is strictly monotone over a whole interval.
+  A strictly monotone function over a compact interval 
+  must have its minimum value on the boundary of said interval.
+  If $\x$ is such an interval contained in the interior of $\X$, 
+  then $\x$ can be discarded since there is an adjacent box that is 
+  guaranteed to contain a point with lower function value than any point in $\x$.
+  If $\x$ intersects the boundary of $\X$, 
+  then $\x$ can only be discarded if this intersection 
+  does not contain $\ul F(\x)$, which can be determined from the monotonicity.
+
+  The test is as follows, given $\x$, $\X$ and $\nabla F(\x)$.
+
+  \begin{itemize}
+    \item For $i = 1,\dots,n$:
+    \begin{enumerate}
+      \item If $0 \in \nabla F(\x)_i$, go to next index.
+      \item Otherwise, $f$ is monotone in at least one component over $\x$ and 
+      hence $\x$ can be removed unless $\x \cap \X \neq \emptyset$, 
+      in which case the following is checked.
+      \begin{itemize}
+        \item If $\min \nabla F(\x)_i > 0$ and $\ul X \ind i = \ul x \ind i$, then modify $\x$ to be the thin interval $[\ul x \ind i, \ul x \ind i]$.
+        \item Else, if $\max \nabla F(\x)_i < 0$ and $\ol X \ind i = \ol x \ind i$, then modify $\x$ to be the thin interval $[\ol x \ind i, \ol x \ind i]$.
+        \item Else, remove $\x$ from the search and stop the iteration.
+      \end{itemize}
+    \end{enumerate}
+  \end{itemize}
+\end{document}

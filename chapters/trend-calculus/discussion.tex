@@ -1,0 +1,40 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../trend-calculus.tex]{subfiles}
+
+\begin{document}
+  A problem with the Trend Calculus algorithm is that it is inherently sequential since 
+  the preceeding window and trend must be known before computing the trend at a new point.
+  Due to this, the algorithm is completely scalable in terms of memory, but not speed.
+  Parts of the algorithm could be made scalable in computing power as well, 
+  namely the mapping of points into windows, but 
+  this is such a small part of the algorithm that 
+  the overhead for such an operation is too large in comparison to the time saved.
+  The possibly scalable parts can without problem be 
+  parallelized locally on each worker in a shared-memory manner, 
+  but they are very difficult to do efficiently in 
+  the distributed-memory setting of the cluster.
+  This is especially true if the sought result is 
+  the augmented time series with all original points and 
+  their reversal orders (including 0 for no reversal), 
+  since this would require a series of very expensive join operations.
+
+  One way to utilize the distributed parallelism in the cluster is to 
+  run the algorithm for several time series at the same time, 
+  using the mentioned label field to distinguish them.
+  The \verb|Group| part of \verb|flatMapGroupsWithState| refers to 
+  the possibility of having several states at the same time, 
+  each corresponding to a different group, in this case different time series.
+  This reduces the overhead compared to running the algorithm once for each time series, 
+  while also allowing more workers to do useful work at the same time.
+  For example, the algorithm can process 
+  a selection of 10 different minute level exchange rate time series \cite{histdata} 
+  ($4.5 \cdot 10^7$ data points) in 5.3 minutes, on a cluster with 4 workers,
+  each with 16 GB memory and 4 cores.
+
+  The memory usage increases in proportion to the number of simultaneous computations, 
+  but since the state is small, this is not a large problem.
+  Using the Apache Spark framework comes with the benefit that 
+  the algorithm works just as well with streaming as static data, and
+  due to the fault-tolerance in Apache Spark,
+  correctness is ensured even in the event of worker failures.
+\end{document}

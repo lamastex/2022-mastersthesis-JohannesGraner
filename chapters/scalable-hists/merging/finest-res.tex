@@ -1,0 +1,64 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../merging.tex]{subfiles}
+
+\begin{document}
+  The bottom-up approach to MRP histogram estimation begins with
+  determining a \textit{finest resolution} from which the merging will start.
+  Given a root box (which should be at least as large as the bounding box of the sample),
+  the finest resolution is determined by a depth $D$.
+  The root box is then partitioned into an RP with each leaf at depth $D$,
+  and each sample point is associated with the corresponding leaf box.
+  $D$ can be determined by, for example, the depth at which the volume of boxes is small enough,
+  or all sidelengths are small enough.
+  The finest resolution count-based histogram 
+  is given by counting the number of data points in each leaf box with depth $D$.
+
+  Since the bottom-up approach only merges leaves,
+  this histogram should be much finer than the wanted final resolution, 
+  in terms of an optimally smoothed distribution of leaf depths $\leq D$.
+  The finest resolution for a set of distinct sample data points
+  should result in a single sample per leaf.
+  Due to this extreme sparsity, empty leaves should not be stored,
+  yielding a sparse $\Zz-$MRP with neutral element 0.
+  Once the finest resolution histogram is computed,
+  the original sample is no longer needed,
+  since the merges only depend on leaf counts.
+
+  This step is embarrasingly parallel even in a distributed setting since
+  each sample point can be mapped to the appropriate leaf label independently,
+  and the counting is a groupby and reduce operation.
+  Map, groupby and reduce are basic operations in distributed computing.
+
+  This approach is given in Algorithm \ref{alg:finest-res}
+  and the output is not assumed to fit into memory of a single computer.
+
+  \begin{algorithm}
+    \caption{finestRes$(x_{[n]}, \x_\rho, D)$}
+    \label{alg:finest-res}
+    \KwIn{ 
+      $x_{[n]}$, the dataset.
+      $\x_\rho$, the root box.
+      $D$, the finest resolution depth.
+    }
+    \KwOut{
+      $s$, the $\Zz-$MRP (e = 0) with counts at depth $D$.
+    }
+    \ForEach(// distributed map operation){$ x \in x_{[n]} $}{
+      $l \gets $ leaf label of $x$ at depth $D$
+
+      $x \gets (x, l)$
+    }
+
+    $\mathrm{leafGroups} \gets x_{[n]}$ grouped by label // distributed grouping
+
+    \ForEach(// distributed map){$\mathrm{lp} = (\mathrm{leaf}, \mathrm{points}) \in \mathrm{leafGroups}$}{
+      $\mathrm{lp} \gets (\mathrm{leaf}, \mathrm{length}(\mathrm{points}))$
+    }
+
+    $s \gets \x_\rho$ // the trivial RP
+
+    $\Lz(s) \gets \mathrm{leafGroups}$
+
+    \Return{$s$}
+  \end{algorithm}
+\end{document}

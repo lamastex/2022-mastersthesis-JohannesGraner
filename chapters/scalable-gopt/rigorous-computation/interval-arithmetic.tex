@@ -1,0 +1,97 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../rigorous-computation.tex]{subfile}
+
+\begin{document}
+  Both measurement errors and round-off errors can be carried forward properly through computations using interval arithmetic.
+
+  An interval $\x = [\ul x, \ol x] \subset \Rz$ can be used to encapsulate the error by using the lower and upper bounds for the number or measurement as the lower and upper bound of the interval, respectively.
+  The set of all real intervals is $\Iz \Rz = \{[\ul x, \ol x] : \ul x \le \ol x,\; \ul x, \ol x \in \Rz \}$.
+  The diameter of $\x$ is $d(\x) = \ol x - \ul x$ and the midpoint is $\Imid(\x) = \frac{\ul x + \ol x}{2}$.
+  The largest absolute value of $\x$ is 
+  $|\x| = \max \{ |x| : x \in \x \} = \max \{ |\ul x|, |\ol x| \}$ and 
+  the smallest absolute value is \linebreak 
+  $\left< \x \right> = \min \{ |x| \in \x \} = \begin{cases} 0,& 0 \in \x \\ \min \{ |\ul x|, |\ol x| \},& 0 \notin \x \end{cases}$.
+  The absolute value of $\x$ is $|\x|_{[]} = [\left< \x \right>, |\x|]$.
+  A useful measure is the relative diameter of an interval, denoted $d_{rel}(\x)$.
+  If $0 \notin \x$, then $\drel(\x) = \frac{d(\x)}{\left< \x \right>}$, 
+  otherwise $\drel(\x) = d(\x)$.
+  An interval with $\ul x = \ol x$ is called \textit{thin}.
+  An interval that is not thin, i.e. $\ul x < \ol x$, is called \textit{thick}.
+
+  Intervals are not restricted to the Real line, 
+  in particular they can be extended to interval vectors in $\Iz\Rz^d$ by 
+  letting each component be an interval.
+  The diameter, midpoint, etc. are then vectors in $\Rz^d$ and 
+  the maximal diameter of $\x \in \Iz \Rz^d$ is defined by $\dm(\x) = \max_i d(\x_i)$.
+  The maximal relative diameter is similarly defined as $\dmrel(\x) = \max_i \drel(\x_i)$.
+
+  A metric $g$ can be defined on $\Iz \Rz$ as 
+  $g(\x,\y) = max\{|\ul x - \ul y|, |\ol x - \ol y|\}$, 
+  yielding that $\Iz \Rz$ is a complete metric space under $g$.
+  The sequence of intervals $\{\x^{(i)}\}$ converging to $\x$ is 
+  equivalent to $\ul x^{(i)} \to \ul x$ and $\ol x^{(i)} \to \ol x$.
+  This can also be extended to $\Iz \Rz^d$ and 
+  hence it is reasonable to consider continuous and differentiable functions 
+  $f : \Iz \Rz^d \to \Iz \Rz^k$ with continuity and differentiability 
+  defined as usual with the metric $g$.
+
+  With $\Iz \Rz$ as a metric space, an arithmetic is defined by 
+  the operations $\{+,-,\cdot,/\}$.
+  Let $\circ \in \{+,-,\cdot,/\}$ and $\x, \y \in \Iz \Rz$.
+  Assume $0 \notin \y$ when $\circ = /$.
+  Then, $\x \circ \y$ is defined by 
+  $\x \circ \y = \{ x \circ y : x \in \x, y \in \y \}$.
+  Using this definition of the arithmetic operations makes them \textit{inclusion isotonic}; 
+  if $\vv \subseteq \x$ and $\w \subseteq \y$, then $\vv \circ \w \subseteq \x \circ \y$.
+  This is due to $\x$ and $\y$ being simply connected compact intervals, 
+  and $\circ$ a continous operation.
+  With these properties, $\x \circ \y$ contains the minimum, maximum and 
+  all values in between of $x \circ y$ where $x \in \x, y \in \y$, 
+  i.e. $\x \circ \y = [\min\{ x \circ y \}, \max\{ x \circ y \}]$.
+
+  The binary operations of $+$ and $\cdot$ have identity elements, the thin intervals $[0,0]$ and $[1,1]$, respectively.
+  However, neither addition nor subtraction have inverses except when $\x$ is thin, 
+  due to $[0,0] \subsetneq \x - \x$ and $[1,1] \subsetneq \x / \x$ whenever $\ul x < \ol x$.
+  Both $+$ and $\cdot$ are associative and commutative, but only subdistributive, i.e. $\x \cdot (\y + \z) \subseteq (\x + \y) \cdot (\x + \z)$.
+
+  If $f : \Rz^d \to \Rz$ is a function, 
+  then the image of $f$ over an interval vector $\x$ is 
+  $f(\x) = \{ f(x) : x \in \x \}$. 
+  Further, if $f$ is a combination of elementary functions (sin, cos, exp, etc.), 
+  arithmetic operations, and constants, 
+  then $f$ is inclusion isotonic and can be extended to its 
+  \textit{natural interval extension} $F : \Iz \Rz^d \to \Iz \Rz$ by 
+  replacing all components of $f$ with their interval counterparts.
+  Since $F$ is inclusion isotonic, for each $x \in \x$, $f(x) \in F(\x)$.
+  Since this implication is only one way, 
+  in general $F(\x) \not\subseteq f(\x)$, 
+  and hence $F(\x)$ is generally an overestimation of $f(\x)$.
+  However, as $\dm(\x)$ decreases to 0, 
+  the difference between $F(\x)$ and $f(\x)$, $g(F(\x),f(\x))$ 
+  decreases linearly to 0 as well.
+  In other words, by partitioning $\x$ as $\{\x^{(1)},\dots,\x^{(m)}\}$, 
+  a better approximation of $f(\x)$ is achieved by $\bigcup_i F(\x^{(i)})$.
+
+  An even better approximation is available when $f$ is 
+  differentiable everywhere in $\x$.
+  The \textit{centered form} of $f$ is based on the mean value theorem.
+
+  \begin{align*}
+    f(x) = & f(c) + \nabla f(b) \cdot (x - c) \in f(c) + \nabla f(\x) \cdot (x - c) \subseteq \\
+    \subseteq & f(c) + \nabla F(\x) \cdot (\x - c) = F_c(\x)
+  \end{align*}
+
+  where $b,c,x \in \x$ with $c < b < x$ and real numbers are 
+  treated as thin intervals where necessary.
+  $g(F_c(\x),f(\x))$ decreases to 0 quadratically as $\dm (\x) \to 0$.
+
+  Another way to improve the approximation $F(\x)$ is to 
+  simplify the expression for $f(x)$ in order to 
+  minimize the number of occurances of $x$, and 
+  use thin intervals for constants and parameters wherever possible.
+
+  For an in-depth treatment of interval arithmetic, see e.g. \cite{toolbox-hammer}.
+  
+
+  
+\end{document}

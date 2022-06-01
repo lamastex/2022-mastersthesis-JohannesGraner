@@ -1,0 +1,41 @@
+% !TEX root = $uni/master-thesis/thesis/main.tex
+\documentclass[../regular-pavings.tex]{subfiles}
+
+\begin{document}
+  
+  Every node in an RP $s \in \rps$ has zero or two children, and 
+  a node has zero children if and only if it is a leaf node.
+  Each leaf node can also be uniquely determined by its sequence of splits from the root node, 
+  which contains -- for each split -- the information of whether the node belongs to 
+  the left or right child node in the split.
+  In other words, a leaf node can be represented as a sequence of bits (0 for left, 1 for right).
+  Such a sequence is called a \textit{bitstring}.
+  Using this representation, the RP is uniquely determined by the set of leaf node bitstrings.
+  Considering that the leaves correspond to a partition of the root box, 
+  these bitstrings act as labels for the boxes in the partition.
+
+  The depth of a node $l$, denoted as $d(l)$, is given by the length of $l$'s bitstring.
+  Denote the ancestor of $l$ at depth $d$ by $t(l, d)$ and 
+  note that $t(l, d)$ is given by the first $d$ bits in $l$'s bitstring.
+  Hence $t(l, d)$ is the truncation of $l$'s bitstring to its first $d$ bits.
+  To make $t(l, d)$ defined for all $d \in \Zz_{>0}$, let $t(l, d) = t(l, d(l)) = l$ if $d \ge d(l)$.
+
+  This allows for efficient storage of the RP, 
+  since there is no need to keep track of the internal nodes explicitly.
+  Representing the tree in this way differs from \cite{mrp-raaz-harlow-tucker} 
+  where every node is present.
+  Using the bitstring representation necessitates changes to 
+  the algorithms presented in \cite{mrp-raaz-harlow-tucker}.
+  
+  \subsubsection{Ordering}
+  Although the memory footprint of the RP is not affected by the ordering of leaves,
+  several operations can be made more efficient by requiring a certain order of the leaves.
+
+  A left-to-right ordering is given by $l_1 < l_2$ if and only if $t(l_1, d(l_2))$ is 
+  to the left of $l_2$, or $t(l_2, d(l_1))$ is to the right of $l_1$.
+  In other words, to determine if $l_1 < l_2$, the two nodes are truncated to the same depth 
+  (the minimum of $d(l_1)$ and $d(l_2)$) where they can be directly compared.
+
+  For example, in Figure \ref{fig:tree-graphic}, $\rho LRL < \rho RL$ since $t(\rho LRL, d(\rho RL)) =$ \linebreak $= t(\rho LRL, 2) = \rho LR$ which is clearly left of $\rho RL$.
+
+\end{document}
